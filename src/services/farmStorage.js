@@ -2,23 +2,31 @@
 ----------------------------------------------------
 AgroTorch AgriOS
 Farm Storage Service
-Version 1.0.0
+Version 2.0.0
 ----------------------------------------------------
 */
+
+import { getCurrentUserId } from "./userService.js";
 
 const STORAGE_KEY = "agrotorch_farms";
 
 export function getFarms() {
 
-    const farms = localStorage.getItem(STORAGE_KEY);
+    const farms =
+        JSON.parse(localStorage.getItem(STORAGE_KEY) || "[]");
 
-    return farms ? JSON.parse(farms) : [];
+    const userId = getCurrentUserId();
+
+    return farms.filter(farm => farm.userId === userId);
 
 }
 
 export function saveFarm(farm) {
 
-    const farms = getFarms();
+    const farms =
+        JSON.parse(localStorage.getItem(STORAGE_KEY) || "[]");
+
+    farm.userId = getCurrentUserId();
 
     farms.push(farm);
 
@@ -31,22 +39,40 @@ export function saveFarm(farm) {
 
 export function deleteFarm(index){
 
-    const farms = getFarms();
+    const farms =
+        JSON.parse(localStorage.getItem(STORAGE_KEY) || "[]");
 
-    farms.splice(index,1);
+    const userId = getCurrentUserId();
+
+    const myFarms = farms.filter(farm => farm.userId === userId);
+
+    const farmToDelete = myFarms[index];
+
+    const updated = farms.filter(farm => farm !== farmToDelete);
 
     localStorage.setItem(
         STORAGE_KEY,
-        JSON.stringify(farms)
+        JSON.stringify(updated)
     );
 
 }
 
 export function updateFarm(index,newFarm){
 
-    const farms = getFarms();
+    const farms =
+        JSON.parse(localStorage.getItem(STORAGE_KEY) || "[]");
 
-    farms[index]=newFarm;
+    const userId = getCurrentUserId();
+
+    const myFarms = farms.filter(farm => farm.userId === userId);
+
+    const oldFarm = myFarms[index];
+
+    const realIndex = farms.indexOf(oldFarm);
+
+    newFarm.userId = userId;
+
+    farms[realIndex] = newFarm;
 
     localStorage.setItem(
         STORAGE_KEY,
