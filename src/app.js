@@ -2,9 +2,7 @@
 ----------------------------------------------------
 AgroTorch AgriOS
 File: src/app.js
-Version: 0.6.0
-Description:
-Application Bootstrap
+Version: 0.7.0
 ----------------------------------------------------
 */
 
@@ -42,6 +40,16 @@ import {
     initExpenseTimeline
 } from "./pages/expenseTimeline.js";
 
+import {
+    addHarvestPage,
+    initAddHarvestPage
+} from "./pages/addHarvest.js";
+
+import {
+    harvestTimelinePage,
+    initHarvestTimeline
+} from "./pages/harvestTimeline.js";
+
 export function startApp() {
 
     document.querySelector("#app").innerHTML = splashPage();
@@ -77,6 +85,10 @@ function loadWorkspace() {
             <button id="expenseBtn">💰</button>
 
             <button id="expenseHistoryBtn">📊</button>
+
+            <button id="harvestBtn">🌾</button>
+
+            <button id="harvestHistoryBtn">📦</button>
 
         </nav>
 
@@ -118,6 +130,16 @@ function loadWorkspace() {
         initExpenseTimeline();
     }
 
+    function showAddHarvest() {
+        page.innerHTML = addHarvestPage();
+        initAddHarvestPage();
+    }
+
+    function showHarvestHistory() {
+        page.innerHTML = harvestTimelinePage();
+        initHarvestTimeline();
+    }
+
     showHome();
 
     document.getElementById("homeBtn").addEventListener("click", showHome);
@@ -133,5 +155,9 @@ function loadWorkspace() {
     document.getElementById("expenseBtn").addEventListener("click", showAddExpense);
 
     document.getElementById("expenseHistoryBtn").addEventListener("click", showExpenseHistory);
+
+    document.getElementById("harvestBtn").addEventListener("click", showAddHarvest);
+
+    document.getElementById("harvestHistoryBtn").addEventListener("click", showHarvestHistory);
 
 }
