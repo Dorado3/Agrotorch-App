@@ -12,11 +12,11 @@ export function myFarmPage() {
         <h2>🌾 Farm Hub</h2>
 
         <div class="agro-card">
+
           <h3>No Farms Yet</h3>
 
-          <p>
-            Start by registering your first farm.
-          </p>
+          <p>Start by registering your first farm.</p>
+
         </div>
 
       </section>
@@ -29,7 +29,7 @@ export function myFarmPage() {
 
       <h2>🌾 Farm Hub</h2>
 
-      ${farms.map(farm => `
+      ${farms.map((farm,index)=>`
 
         <div class="agro-card">
 
@@ -45,6 +45,12 @@ export function myFarmPage() {
 
           <p><strong>Size:</strong> ${farm.farmSize} Acres</p>
 
+          <button
+              class="agro-btn openFarmBtn"
+              data-index="${index}">
+              👁 Open Farm
+          </button>
+
         </div>
 
       `).join("")}
@@ -54,4 +60,20 @@ export function myFarmPage() {
 
 }
 
-export function initMyFarmPage() {}
+export function initMyFarmPage(){
+
+  document.querySelectorAll(".openFarmBtn")
+    .forEach(button=>{
+
+      button.addEventListener("click",()=>{
+
+        alert(
+          "Opening Farm Details for Farm #" +
+          button.dataset.index
+        );
+
+      });
+
+    });
+
+}
