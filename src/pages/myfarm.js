@@ -1,152 +1,57 @@
-import { getFarms, addFarm, deleteFarm } from "../services/storage.js";
+import { getFarms } from "../services/farmStorage.js";
 
 export function myFarmPage() {
-  return `
-    <section class="page">
-
-      <h2>🌾 My Farms</h2>
-
-      <div class="farm-form">
-
-        <input
-          id="farmName"
-          type="text"
-          placeholder="Farm Name"
-        />
-
-        <input
-          id="farmLocation"
-          type="text"
-          placeholder="Location"
-        />
-
-        <input
-          id="farmCrop"
-          type="text"
-          placeholder="Crop"
-        />
-
-        <input
-          id="farmSize"
-          type="number"
-          placeholder="Size (Acres)"
-        />
-
-        <button id="saveFarmBtn">
-          Save Farm
-        </button>
-
-      </div>
-
-      <hr>
-
-      <div id="farmList"></div>
-
-    </section>
-  `;
-}
-
-export function initMyFarmPage() {
-
-  renderFarmList();
-
-  const btn = document.getElementById("saveFarmBtn");
-
-  if (!btn) return;
-
-  btn.addEventListener("click", () => {
-
-    const name =
-      document.getElementById("farmName").value.trim();
-
-    const location =
-      document.getElementById("farmLocation").value.trim();
-
-    const crop =
-      document.getElementById("farmCrop").value.trim();
-
-    const size =
-      document.getElementById("farmSize").value.trim();
-
-    if (!name || !location || !crop || !size) {
-
-      alert("Please complete all fields.");
-
-      return;
-
-    }
-
-    addFarm({
-      name,
-      location,
-      crop,
-      size
-    });
-
-    document.getElementById("farmName").value = "";
-    document.getElementById("farmLocation").value = "";
-    document.getElementById("farmCrop").value = "";
-    document.getElementById("farmSize").value = "";
-
-    renderFarmList();
-
-  });
-
-}
-
-function renderFarmList() {
 
   const farms = getFarms();
 
-  const container =
-    document.getElementById("farmList");
-
-  if (!container) return;
-
   if (farms.length === 0) {
 
-    container.innerHTML = `
-      <p>No farms added yet.</p>
-    `;
+    return `
+      <section class="dashboard">
 
-    return;
+        <h2>🌾 Farm Hub</h2>
+
+        <div class="agro-card">
+          <h3>No Farms Yet</h3>
+
+          <p>
+            Start by registering your first farm.
+          </p>
+        </div>
+
+      </section>
+    `;
 
   }
 
-  container.innerHTML = farms.map(farm => `
+  return `
+    <section class="dashboard">
 
-    <div class="farm-card">
+      <h2>🌾 Farm Hub</h2>
 
-      <h3>${farm.name}</h3>
+      ${farms.map(farm => `
 
-      <p><strong>Location:</strong> ${farm.location}</p>
+        <div class="agro-card">
 
-      <p><strong>Crop:</strong> ${farm.crop}</p>
+          <h3>${farm.farmName}</h3>
 
-      <p><strong>Size:</strong> ${farm.size} Acres</p>
+          <p><strong>Owner:</strong> ${farm.ownerName}</p>
 
-      <button
-        class="deleteFarm"
-        data-id="${farm.id}"
-      >
-        Delete
-      </button>
+          <p><strong>Crop:</strong> ${farm.crop}</p>
 
-    </div>
+          <p><strong>State:</strong> ${farm.state}</p>
 
-  `).join("");
+          <p><strong>LGA:</strong> ${farm.lga}</p>
 
-  document.querySelectorAll(".deleteFarm")
-    .forEach(button => {
+          <p><strong>Size:</strong> ${farm.farmSize} Acres</p>
 
-      button.addEventListener("click", () => {
+        </div>
 
-        deleteFarm(Number(button.dataset.id));
+      `).join("")}
 
-        renderFarmList();
-
-      });
-
-    });
+    </section>
+  `;
 
 }
+
+export function initMyFarmPage() {}

@@ -1,4 +1,4 @@
-import { saveFarm } from "../services/farmService.js";
+import { saveFarm } from "../services/farmStorage.js";
 import "../styles/dashboard.css";
 
 export function addFarmPage() {
@@ -27,9 +27,13 @@ export function addFarmPage() {
         <label>Farm Size (Acres)</label>
         <input type="number" id="farmSize" required>
 
-<label>Crop</label>
-<input type="text"
-  id="crop"placeholder="e.g. Tomato, Pepper, Maize" required>
+        <label>Crop</label>
+        <input
+          type="text"
+          id="crop"
+          placeholder="e.g. Tomato, Pepper, Maize"
+          required
+        >
 
         <label>Variety</label>
         <input type="text" id="variety">
@@ -61,21 +65,23 @@ export function initAddFarmPage() {
 
     const farm = {
 
-      farmName: document.getElementById("farmName").value,
+      farmName: document.getElementById("farmName").value.trim(),
 
-      ownerName: document.getElementById("ownerName").value,
+      ownerName: document.getElementById("ownerName").value.trim(),
 
-      state: document.getElementById("state").value,
+      state: document.getElementById("state").value.trim(),
 
-      lga: document.getElementById("lga").value,
+      lga: document.getElementById("lga").value.trim(),
 
-      farmSize: document.getElementById("farmSize").value,
+      farmSize: Number(document.getElementById("farmSize").value),
 
-      crop: document.getElementById("crop").value,
+      crop: document.getElementById("crop").value.trim(),
 
-      variety: document.getElementById("variety").value,
+      variety: document.getElementById("variety").value.trim(),
 
-      plantingDate: document.getElementById("plantingDate").value
+      plantingDate: document.getElementById("plantingDate").value,
+
+      createdAt: new Date().toISOString()
 
     };
 

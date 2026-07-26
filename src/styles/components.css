@@ -1,0 +1,75 @@
+/*
+----------------------------------------------------
+AgroTorch Design System
+Components v1.1
+----------------------------------------------------
+*/
+
+/* BUTTON */
+
+.agro-btn{
+
+    width:100%;
+    padding:16px;
+
+    border:none;
+
+    border-radius:var(--radius);
+
+    background:var(--primary);
+
+    color:#fff;
+
+    font-size:16px;
+
+    font-weight:600;
+
+    cursor:pointer;
+
+    transition:all var(--speed);
+
+    box-shadow:var(--shadow);
+
+}
+
+.agro-btn:hover{
+
+    background:var(--primary-dark);
+
+    transform:translateY(-2px);
+
+}
+
+.agro-btn:active{
+
+    transform:scale(.98);
+
+}
+
+/* CARD */
+
+.agro-card{
+
+    background:var(--surface);
+
+    border-radius:var(--radius-large);
+
+    padding:20px;
+
+    margin-bottom:18px;
+
+    box-shadow:var(--shadow-small);
+
+    transition:all var(--speed);
+
+    border:1px solid var(--border);
+
+}
+
+.agro-card:hover{
+
+    transform:translateY(-3px);
+
+    box-shadow:var(--shadow);
+
+}

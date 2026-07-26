@@ -1,61 +1,92 @@
-import "../styles/dashboard.css";
+/*
+----------------------------------------------------
+AgroTorch Command Centre
+Dashboard v2.0
+----------------------------------------------------
+*/
+
+import { AgroCard } from "../components/Card.js";
+
 export function dashboardPage() {
-  return `
+
+    return `
+
     <section class="dashboard">
 
-      <div class="hero-card">
-        <h2>Welcome to AgroTorch</h2>
-        <p>Your Agricultural Operating System</p>
-      </div>
+        <h2>🌞 Good Morning</h2>
 
-      <div class="stats-grid">
+        <p>
+            Welcome back to AgroTorch AgriOS.
+        </p>
 
-        <div class="stat-card">
-          <span class="stat-icon">🌾</span>
-          <h3>12</h3>
-          <p>Active Farms</p>
-        </div>
+        ${AgroCard(`
 
-        <div class="stat-card">
-          <span class="stat-icon">🛒</span>
-          <h3>248</h3>
-          <p>Marketplace Products</p>
-        </div>
+            <h3>🧠 Today's Best Decision</h3>
 
-        <div class="stat-card">
-          <span class="stat-icon">👨‍🌾</span>
-          <h3>38</h3>
-          <p>Registered Farmers</p>
-        </div>
+            <p>
+                Apply Potassium Nitrate before 10:00 AM.
+            </p>
 
-        <div class="stat-card">
-          <span class="stat-icon">🧠</span>
-          <h3>97%</h3>
-          <p>CDRE Accuracy</p>
-        </div>
+        `)}
 
-      </div>
+        ${AgroCard(`
 
-      <div class="quick-actions">
+            <h3>🌾 Farm Health</h3>
 
-        <button class="action-btn">
-          ➕ Add Farm
-        </button>
+            <h1>91%</h1>
 
-        <button class="action-btn">
-          📋 View Reports
-        </button>
+            <p>
+                Excellent condition.
+            </p>
 
-        <button class="action-btn">
-          🛒 Open Marketplace
-        </button>
+        `)}
 
-        <button class="action-btn">
-          🤖 Launch CDRE
-        </button>
+        ${AgroCard(`
 
-      </div>
+            <h3>💰 Profit Forecast</h3>
+
+            <h2>₦2,450,000</h2>
+
+            <p>
+                Estimated profit this season.
+            </p>
+
+        `)}
+
+        ${AgroCard(`
+
+            <h3>📋 Today's Mission</h3>
+
+            <ul>
+
+                <li>✅ Irrigate Block A</li>
+
+                <li>⬜ Spray Fungicide</li>
+
+                <li>⬜ Record Labour</li>
+
+                <li>⬜ Contact Buyer</li>
+
+            </ul>
+
+        `)}
+
+        ${AgroCard(`
+
+            <h3>📈 Market Update</h3>
+
+            <p>
+
+                Tomato:
+
+                <strong>₦185,000 / tonne</strong>
+
+            </p>
+
+        `)}
 
     </section>
-  `;
+
+    `;
+
 }
