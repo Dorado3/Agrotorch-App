@@ -2,7 +2,7 @@
 ----------------------------------------------------
 AgroTorch AgriOS
 File: src/app.js
-Version: 0.5.0
+Version: 0.6.0
 Description:
 Application Bootstrap
 ----------------------------------------------------
@@ -32,6 +32,16 @@ import {
     activityTimelinePage
 } from "./pages/activityTimeline.js";
 
+import {
+    addExpensePage,
+    initAddExpensePage
+} from "./pages/addExpense.js";
+
+import {
+    expenseTimelinePage,
+    initExpenseTimeline
+} from "./pages/expenseTimeline.js";
+
 export function startApp() {
 
     document.querySelector("#app").innerHTML = splashPage();
@@ -54,19 +64,19 @@ function loadWorkspace() {
 
         <nav class="bottom-nav">
 
-            <button id="homeBtn">🏠 Home</button>
+            <button id="homeBtn">🏠</button>
 
-            <button id="farmBtn">🌾 Farm Hub</button>
+            <button id="farmBtn">🌾</button>
 
-            <button id="addFarmBtn">➕ Add Farm</button>
+            <button id="addFarmBtn">➕</button>
 
-            <button id="addActivityBtn">📝 Add Activity</button>
+            <button id="addActivityBtn">📝</button>
 
-            <button id="activityBtn">📋 Activities</button>
+            <button id="activityBtn">📋</button>
 
-            <button id="cdreBtn">🧠 CDRE</button>
+            <button id="expenseBtn">💰</button>
 
-            <button id="marketBtn">🛒 Market</button>
+            <button id="expenseHistoryBtn">📊</button>
 
         </nav>
 
@@ -98,34 +108,30 @@ function loadWorkspace() {
         page.innerHTML = activityTimelinePage();
     }
 
+    function showAddExpense() {
+        page.innerHTML = addExpensePage();
+        initAddExpensePage();
+    }
+
+    function showExpenseHistory() {
+        page.innerHTML = expenseTimelinePage();
+        initExpenseTimeline();
+    }
+
     showHome();
 
     document.getElementById("homeBtn").addEventListener("click", showHome);
+
     document.getElementById("farmBtn").addEventListener("click", showMyFarm);
+
     document.getElementById("addFarmBtn").addEventListener("click", showAddFarm);
+
     document.getElementById("addActivityBtn").addEventListener("click", showAddActivity);
+
     document.getElementById("activityBtn").addEventListener("click", showActivities);
 
-    document.getElementById("cdreBtn").addEventListener("click", () => {
+    document.getElementById("expenseBtn").addEventListener("click", showAddExpense);
 
-        page.innerHTML = `
-        <div class="dashboard">
-            <h2>🧠 CDRE</h2>
-            <p>Coming Soon...</p>
-        </div>
-        `;
-
-    });
-
-    document.getElementById("marketBtn").addEventListener("click", () => {
-
-        page.innerHTML = `
-        <div class="dashboard">
-            <h2>🛒 AgriMarket</h2>
-            <p>Coming Soon...</p>
-        </div>
-        `;
-
-    });
+    document.getElementById("expenseHistoryBtn").addEventListener("click", showExpenseHistory);
 
 }
