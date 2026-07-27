@@ -2,23 +2,31 @@
 ----------------------------------------------------
 AgroTorch AgriOS
 Activity Storage Service
-Version 1.0.0
+Version 2.0.0
 ----------------------------------------------------
 */
+
+import { getCurrentUserId } from "./userService.js";
 
 const STORAGE_KEY = "agrotorch_activities";
 
 export function getActivities() {
 
-    const activities = localStorage.getItem(STORAGE_KEY);
+    const activities =
+        JSON.parse(localStorage.getItem(STORAGE_KEY) || "[]");
 
-    return activities ? JSON.parse(activities) : [];
+    const userId = getCurrentUserId();
+
+    return activities.filter(activity => activity.userId === userId);
 
 }
 
 export function saveActivity(activity) {
 
-    const activities = getActivities();
+    const activities =
+        JSON.parse(localStorage.getItem(STORAGE_KEY) || "[]");
+
+    activity.userId = getCurrentUserId();
 
     activities.push(activity);
 
@@ -39,13 +47,22 @@ export function getFarmActivities(farmName) {
 
 export function deleteActivity(index) {
 
-    const activities = getActivities();
+    const activities =
+        JSON.parse(localStorage.getItem(STORAGE_KEY) || "[]");
 
-    activities.splice(index, 1);
+    const userId = getCurrentUserId();
+
+    const myActivities =
+        activities.filter(activity => activity.userId === userId);
+
+    const activityToDelete = myActivities[index];
+
+    const updated =
+        activities.filter(activity => activity !== activityToDelete);
 
     localStorage.setItem(
         STORAGE_KEY,
-        JSON.stringify(activities)
+        JSON.stringify(updated)
     );
 
 }

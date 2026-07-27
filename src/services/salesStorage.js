@@ -1,18 +1,26 @@
+import { getCurrentUserId } from "./userService.js";
+
 const STORAGE_KEY = "agrotorch_sales";
 
 export function getSales() {
 
-    const sales = localStorage.getItem(STORAGE_KEY);
+    const sales =
+        JSON.parse(localStorage.getItem(STORAGE_KEY) || "[]");
 
-    return sales ? JSON.parse(sales) : [];
+    const userId = getCurrentUserId();
+
+    return sales.filter(sale => sale.userId === userId);
 
 }
 
 export function saveSale(sale) {
 
-    const sales = getSales();
+    const sales =
+        JSON.parse(localStorage.getItem(STORAGE_KEY) || "[]");
 
     sale.id = Date.now();
+
+    sale.userId = getCurrentUserId();
 
     sales.push(sale);
 
@@ -25,13 +33,22 @@ export function saveSale(sale) {
 
 export function deleteSale(id) {
 
-    const sales = getSales().filter(
-        sale => sale.id !== id
-    );
+    const sales =
+        JSON.parse(localStorage.getItem(STORAGE_KEY) || "[]");
+
+    const updated =
+        sales.filter(sale => {
+
+            return !(
+                sale.id === id &&
+                sale.userId === getCurrentUserId()
+            );
+
+        });
 
     localStorage.setItem(
         STORAGE_KEY,
-        JSON.stringify(sales)
+        JSON.stringify(updated)
     );
 
 }
