@@ -1,0 +1,36 @@
+/*
+----------------------------------------------------
+AgroTorch Event Types
+Version 1.0.0
+----------------------------------------------------
+*/
+
+export const Events = {
+
+    USER_CREATED: "USER_CREATED",
+
+    USER_LOGIN: "USER_LOGIN",
+
+    USER_LOGOUT: "USER_LOGOUT",
+
+    FARM_CREATED: "FARM_CREATED",
+
+    FARM_UPDATED: "FARM_UPDATED",
+
+    ACTIVITY_RECORDED: "ACTIVITY_RECORDED",
+
+    HARVEST_RECORDED: "HARVEST_RECORDED",
+
+    EXPENSE_RECORDED: "EXPENSE_RECORDED",
+
+    SALE_RECORDED: "SALE_RECORDED",
+
+    STORE_CREATED: "STORE_CREATED",
+
+    PRODUCT_CREATED: "PRODUCT_CREATED",
+
+    ORDER_CREATED: "ORDER_CREATED",
+
+    PAYMENT_COMPLETED: "PAYMENT_COMPLETED"
+
+};
