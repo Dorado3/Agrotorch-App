@@ -2,7 +2,7 @@
 ----------------------------------------------------
 AgroTorch Repository
 Farm Repository
-Version 2.0.0
+Version 3.0.0
 ----------------------------------------------------
 */
 
@@ -20,9 +20,11 @@ import {
 
 import {
 
-    saveFarmCloud,
+    createFarm,
 
-    getFarmsCloud
+    getUserFarms,
+
+    getAllFarms
 
 } from "../firestore/FarmFirestore.js";
 
@@ -36,15 +38,21 @@ export const FarmRepository = {
 
     async allCloud() {
 
-        return await getFarmsCloud();
+        return await getAllFarms();
 
     },
 
-    async create(farm) {
+    async userFarms(ownerId) {
+
+        return await getUserFarms(ownerId);
+
+    },
+
+    async create(ownerId, farm) {
 
         saveFarm(farm);
 
-        return await saveFarmCloud(farm);
+        return await createFarm(ownerId, farm);
 
     },
 

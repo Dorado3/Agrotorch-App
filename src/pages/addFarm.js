@@ -1,4 +1,5 @@
-import { saveFarm } from "../services/farmStorage.js";
+import { FarmRepository } from "../repositories/FarmRepository.js";
+import { auth } from "../core/config/firebase.js";
 import "../styles/dashboard.css";
 
 export function addFarmPage() {
@@ -59,9 +60,23 @@ export function initAddFarmPage() {
 
   if (!form) return;
 
-  form.addEventListener("submit", function (e) {
+  form.addEventListener("submit", async function (e) {
 
     e.preventDefault();
+
+    const currentUser = auth.currentUser;
+
+    if (!currentUser) {
+
+      document.getElementById("saveMessage").innerHTML = `
+        <p style="color:red;margin-top:20px;font-weight:bold;">
+          Please login first.
+        </p>
+      `;
+
+      return;
+
+    }
 
     const farm = {
 
@@ -73,27 +88,39 @@ export function initAddFarmPage() {
 
       lga: document.getElementById("lga").value.trim(),
 
-      farmSize: Number(document.getElementById("farmSize").value),
+      size: Number(document.getElementById("farmSize").value),
 
       crop: document.getElementById("crop").value.trim(),
 
       variety: document.getElementById("variety").value.trim(),
 
-      plantingDate: document.getElementById("plantingDate").value,
-
-      createdAt: new Date().toISOString()
+      plantingDate: document.getElementById("plantingDate").value
 
     };
 
-    saveFarm(farm);
+    try {
 
-    form.reset();
+      await FarmRepository.create(currentUser.uid, farm);
 
-    document.getElementById("saveMessage").innerHTML = `
-      <p style="color:green;margin-top:20px;font-weight:bold;">
-        ✅ Farm saved successfully.
-      </p>
-    `;
+      form.reset();
+
+      document.getElementById("saveMessage").innerHTML = `
+        <p style="color:green;margin-top:20px;font-weight:bold;">
+          ✅ Farm saved successfully.
+        </p>
+      `;
+
+    } catch (error) {
+
+      console.error(error);
+
+      document.getElementById("saveMessage").innerHTML = `
+        <p style="color:red;margin-top:20px;font-weight:bold;">
+          ❌ Failed to save farm.
+        </p>
+      `;
+
+    }
 
   });
 

@@ -1,81 +1,103 @@
 /*
 ----------------------------------------------------
 AgroTorch Firebase Authentication
-Version 1.0.0
+Version 1.1.0
 ----------------------------------------------------
 */
 
 import {
 
-createUserWithEmailAndPassword,
+  createUserWithEmailAndPassword,
 
-signInWithEmailAndPassword,
+  signInWithEmailAndPassword,
 
-signOut,
+  signOut,
 
-sendPasswordResetEmail,
+  sendPasswordResetEmail,
 
-onAuthStateChanged
+  onAuthStateChanged
 
 } from "firebase/auth";
 
 import { auth } from "../../../core/config/firebase.js";
 
-export async function register(email,password){
+import { createUserProfile } from "../../../firestore/users/UserFirestore.js";
 
-return createUserWithEmailAndPassword(
 
-auth,
+export async function register(email, password, fullName = "") {
 
-email,
+  const credential = await createUserWithEmailAndPassword(
 
-password
+    auth,
 
-);
+    email,
 
-}
+    password
 
-export async function login(email,password){
+  );
 
-return signInWithEmailAndPassword(
+  await createUserProfile(credential.user.uid, {
 
-auth,
+    fullName,
 
-email,
+    email,
 
-password
+    role: "farmer",
 
-);
+    status: "active",
 
-}
+    onboardingCompleted: false
 
-export async function logout(){
+  });
 
-return signOut(auth);
-
-}
-
-export async function resetPassword(email){
-
-return sendPasswordResetEmail(
-
-auth,
-
-email
-
-);
+  return credential;
 
 }
 
-export function authListener(callback){
 
-return onAuthStateChanged(
+export async function login(email, password) {
 
-auth,
+  return signInWithEmailAndPassword(
 
-callback
+    auth,
 
-);
+    email,
+
+    password
+
+  );
 
 }
 
+
+export async function logout() {
+
+  return signOut(auth);
+
+}
+
+
+export async function resetPassword(email) {
+
+  return sendPasswordResetEmail(
+
+    auth,
+
+    email
+
+  );
+
+}
+
+
+export function authListener(callback) {
+
+  return onAuthStateChanged(
+
+    auth,
+
+    callback
+
+  );
+
+}
