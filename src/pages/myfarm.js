@@ -1,4 +1,14 @@
-import { getWorkspace, setActiveFarm } from "../core/workspace/workspace.js";
+/*
+----------------------------------------------------
+AgroTorch Farm Hub
+Version 5.3.0
+----------------------------------------------------
+*/
+
+import {
+    getWorkspace,
+    setActiveFarm
+} from "../core/workspace/workspace.js";
 
 export function myFarmPage() {
 
@@ -30,15 +40,15 @@ export function myFarmPage() {
 
         <h2>🌾 Farm Hub</h2>
 
-        ${farms.map((farm,index)=>`
+        ${farms.map((farm, index) => `
 
         <div class="agro-card">
 
-            <h3>${farm.farmName}</h3>
+            <h3>${farm.farmName || "Unnamed Farm"}</h3>
 
-            <p><strong>Crop:</strong> ${farm.crop}</p>
+            <p><strong>Crop:</strong> ${farm.crop || "-"}</p>
 
-            <p><strong>Status:</strong> ${farm.status}</p>
+            <p><strong>Status:</strong> ${farm.status || "Active"}</p>
 
             <button
                 class="openFarmBtn agro-btn"
@@ -58,25 +68,31 @@ export function initMyFarmPage() {
 
     const workspace = getWorkspace();
 
-    document.querySelectorAll(".openFarmBtn")
-    .forEach(button=>{
+    document
+        .querySelectorAll(".openFarmBtn")
+        .forEach(button => {
 
-        button.addEventListener("click",()=>{
+            button.addEventListener("click", () => {
 
-            const farm =
-                workspace.farms[
-                    Number(button.dataset.index)
-                ];
+                const farm =
+                    workspace.farms[
+                        Number(button.dataset.index)
+                    ];
 
-            setActiveFarm(farm);
+                setActiveFarm(farm);
 
-            alert(
-                "Active Farm:\n\n" +
-                farm.farmName
-            );
+                console.log(
+                    "Active Farm:",
+                    farm
+                );
+
+                alert(
+                    "✅ Active Farm Selected\n\n" +
+                    farm.farmName
+                );
+
+            });
 
         });
-
-    });
 
 }
