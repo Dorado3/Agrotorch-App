@@ -1,8 +1,9 @@
-import { logoutUser, getCurrentUser } from "../services/authStorage.js";
+import { auth } from "../core/config/firebase.js";
+import { logout } from "../modules/auth/firebase/firebaseAuth.service.js";
 
-export function settingsPage(onLogout) {
+export function settingsPage() {
 
-    const user = getCurrentUser();
+    const user = auth.currentUser;
 
     return `
     <section class="dashboard">
@@ -13,7 +14,7 @@ export function settingsPage(onLogout) {
 
             <h3>👤 Logged in as</h3>
 
-            <p>${user ? user.name : "Unknown User"}</p>
+            <p>${user?.email || "Unknown User"}</p>
 
             <br>
 
@@ -32,9 +33,9 @@ export function initSettingsPage(onLogout) {
 
     document
         .getElementById("logoutBtn")
-        .addEventListener("click", () => {
+        .addEventListener("click", async () => {
 
-            logoutUser();
+            await logout();
 
             onLogout();
 

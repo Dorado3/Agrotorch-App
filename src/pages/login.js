@@ -1,4 +1,7 @@
-import { saveCurrentUser } from "../services/authStorage.js";
+import {
+    login,
+    register
+} from "../modules/auth/firebase/firebaseAuth.service.js";
 
 export function loginPage() {
 
@@ -6,20 +9,40 @@ export function loginPage() {
 
     <section class="dashboard">
 
-        <h2>👤 Farmer Login</h2>
-
         <div class="agro-card">
 
+            <h2>🌾 AgroTorch Login</h2>
+
             <input
-                id="farmerName"
+                id="fullName"
                 type="text"
-                placeholder="Enter Your Name"
+                placeholder="Full Name (Register only)"
+            >
+
+            <br><br>
+
+            <input
+                id="email"
+                type="email"
+                placeholder="Email"
+            >
+
+            <br><br>
+
+            <input
+                id="password"
+                type="password"
+                placeholder="Password"
             >
 
             <br><br>
 
             <button id="loginBtn">
                 Login
+            </button>
+
+            <button id="registerBtn">
+                Register
             </button>
 
         </div>
@@ -34,28 +57,58 @@ export function initLoginPage(onLogin) {
 
     document
         .getElementById("loginBtn")
-        .addEventListener("click", () => {
+        .addEventListener("click", async () => {
 
-            const name = document
-                .getElementById("farmerName")
-                .value
-                .trim();
+            try {
 
-            if (!name) {
+                const email =
+                    document.getElementById("email").value.trim();
 
-                alert("Please enter your name.");
+                const password =
+                    document.getElementById("password").value;
 
-                return;
+                await login(email, password);
+
+                onLogin();
+
+            } catch (error) {
+
+                alert(error.message);
 
             }
 
-            saveCurrentUser({
+        });
 
-                name
+    document
+        .getElementById("registerBtn")
+        .addEventListener("click", async () => {
 
-            });
+            try {
 
-            onLogin();
+                const fullName =
+                    document.getElementById("fullName").value.trim();
+
+                const email =
+                    document.getElementById("email").value.trim();
+
+                const password =
+                    document.getElementById("password").value;
+
+                await register(
+                    email,
+                    password,
+                    fullName
+                );
+
+                alert("Registration successful.");
+
+                onLogin();
+
+            } catch (error) {
+
+                alert(error.message);
+
+            }
 
         });
 

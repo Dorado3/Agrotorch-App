@@ -1,46 +1,55 @@
+/*
+----------------------------------------------------
+AgroTorch Application Kernel
+Version 3.0.0
+----------------------------------------------------
+*/
 
 import { splashPage } from "./pages/onboarding/splash.js";
 import { startSplash } from "./utils/splash.js";
 
+import { loadWorkspace as initializeWorkspace } from "./core/workspace/workspace.js";
+import { renderPage } from "./core/render/renderPage.js";
+
 import { dashboardPage } from "./pages/dashboard.js";
 
 import {
-myFarmPage,
-initMyFarmPage
+    myFarmPage,
+    initMyFarmPage
 } from "./pages/myfarm.js";
 
 import {
-addFarmPage,
-initAddFarmPage
+    addFarmPage,
+    initAddFarmPage
 } from "./pages/addFarm.js";
 
 import {
-addActivityPage,
-initAddActivityPage
+    addActivityPage,
+    initAddActivityPage
 } from "./pages/addActivity.js";
 
 import {
-activityTimelinePage
+    activityTimelinePage
 } from "./pages/activityTimeline.js";
 
 import {
-addExpensePage,
-initAddExpensePage
+    addExpensePage,
+    initAddExpensePage
 } from "./pages/addExpense.js";
 
 import {
-expenseTimelinePage,
-initExpenseTimeline
+    expenseTimelinePage,
+    initExpenseTimeline
 } from "./pages/expenseTimeline.js";
 
 import {
-addHarvestPage,
-initAddHarvestPage
+    addHarvestPage,
+    initAddHarvestPage
 } from "./pages/addHarvest.js";
 
 import {
-harvestTimelinePage,
-initHarvestTimeline
+    harvestTimelinePage,
+    initHarvestTimeline
 } from "./pages/harvestTimeline.js";
 
 import {
@@ -63,185 +72,246 @@ import {
 } from "./pages/login.js";
 
 import {
-    isLoggedIn
-} from "./services/authStorage.js";
-
-import {
     settingsPage,
     initSettingsPage
 } from "./pages/settings.js";
 
+import { authListener } from "./modules/auth/firebase/firebaseAuth.service.js";
+
 export function startApp() {
 
-document.querySelector("#app").innerHTML = splashPage();
+    document.querySelector("#app").innerHTML = splashPage();
 
-startSplash(() => {
+    startSplash(() => {
 
-    if (isLoggedIn()) {
+        authListener(async (user) => {
 
-        loadWorkspace();
+            if (user) {
 
-    } else {
+                await initializeWorkspace();
 
-        document.querySelector("#app").innerHTML = loginPage();
+                loadAppWorkspace();
 
-        initLoginPage(loadWorkspace);
+            } else {
 
-    }
+                document.querySelector("#app").innerHTML = loginPage();
+
+                initLoginPage(async () => {
+
+                    await initializeWorkspace();
+
+                    loadAppWorkspace();
+
+                });
+
+            }
+
+        });
+
+    });
+
+}
+function loadAppWorkspace() {
+
+document.querySelector("#app").innerHTML = `
+
+<div class="app">
+
+<header class="header">
+
+<h1>🌾 AgroTorch AgriOS</h1>
+
+<p>Powering Smarter Agriculture</p>
+
+</header>
+
+<main id="page"></main>
+
+<nav class="bottom-nav">
+
+<button id="homeBtn">🏠</button>
+
+<button id="farmBtn">🌾</button>
+
+<button id="addFarmBtn">➕</button>
+
+<button id="addActivityBtn">📝</button>
+
+<button id="activityBtn">📋</button>
+
+<button id="expenseBtn">💰</button>
+
+<button id="expenseHistoryBtn">📊</button>
+
+<button id="harvestBtn">🌾</button>
+
+<button id="harvestHistoryBtn">📦</button>
+
+<button id="saleBtn">💵</button>
+
+<button id="salesHistoryBtn">📈</button>
+
+<button id="profitLensBtn">📊</button>
+
+<button id="settingsBtn">⚙️</button>
+
+</nav>
+
+</div>
+
+`;
+
+const page = document.getElementById("page");
+
+const showHome = () => {
+
+page.innerHTML = dashboardPage();
+
+};
+
+const showMyFarm = async () => {
+
+await renderPage(page, myFarmPage);
+
+initMyFarmPage();
+
+};
+
+const showAddFarm = () => {
+
+page.innerHTML = addFarmPage();
+
+initAddFarmPage();
+
+};
+
+const showAddActivity = () => {
+
+page.innerHTML = addActivityPage();
+
+initAddActivityPage();
+
+};
+
+const showActivities = () => {
+
+page.innerHTML = activityTimelinePage();
+
+};
+
+const showAddExpense = () => {
+
+page.innerHTML = addExpensePage();
+
+initAddExpensePage();
+
+};
+
+const showExpenseHistory = () => {
+
+page.innerHTML = expenseTimelinePage();
+
+initExpenseTimeline();
+
+};
+
+const showAddHarvest = () => {
+
+page.innerHTML = addHarvestPage();
+
+initAddHarvestPage();
+
+};
+
+const showHarvestHistory = () => {
+
+page.innerHTML = harvestTimelinePage();
+
+initHarvestTimeline();
+
+};
+
+const showAddSale = () => {
+
+page.innerHTML = addSalePage();
+
+initAddSalePage();
+
+};
+
+const showSalesHistory = () => {
+
+page.innerHTML = salesTimelinePage();
+
+initSalesTimeline();
+
+};
+
+const showProfitLens = () => {
+
+page.innerHTML = profitLensPage();
+
+};
+
+const showSettings = () => {
+
+page.innerHTML = settingsPage();
+
+initSettingsPage(() => {
+
+document.querySelector("#app").innerHTML = loginPage();
+
+initLoginPage(async () => {
+
+await initializeWorkspace();
+
+loadAppWorkspace();
 
 });
-}
 
-function loadWorkspace() {
+});
 
-document.querySelector("#app").innerHTML = `  
-<div class="app">  
+};
 
-    <header class="header">  
-        <h1>🌾 AgroTorch AgriOS</h1>  
-        <p>Powering Smarter Agriculture</p>  
-    </header>  
+showHome();
 
-    <main id="page"></main>  
+document.getElementById("homeBtn")
+    .addEventListener("click", showHome);
 
-    <nav class="bottom-nav">  
+document.getElementById("farmBtn")
+    .addEventListener("click", showMyFarm);
 
-        <button id="homeBtn">🏠</button>  
+document.getElementById("addFarmBtn")
+    .addEventListener("click", showAddFarm);
 
-        <button id="farmBtn">🌾</button>  
+document.getElementById("addActivityBtn")
+    .addEventListener("click", showAddActivity);
 
-        <button id="addFarmBtn">➕</button>  
+document.getElementById("activityBtn")
+    .addEventListener("click", showActivities);
 
-        <button id="addActivityBtn">📝</button>  
+document.getElementById("expenseBtn")
+    .addEventListener("click", showAddExpense);
 
-        <button id="activityBtn">📋</button>  
+document.getElementById("expenseHistoryBtn")
+    .addEventListener("click", showExpenseHistory);
 
-        <button id="expenseBtn">💰</button>  
+document.getElementById("harvestBtn")
+    .addEventListener("click", showAddHarvest);
 
-        <button id="expenseHistoryBtn">📊</button>  
+document.getElementById("harvestHistoryBtn")
+    .addEventListener("click", showHarvestHistory);
 
-        <button id="harvestBtn">🌾</button>  
+document.getElementById("saleBtn")
+    .addEventListener("click", showAddSale);
 
-        <button id="harvestHistoryBtn">📦</button>  
+document.getElementById("salesHistoryBtn")
+    .addEventListener("click", showSalesHistory);
 
-        <button id="saleBtn">💵</button>
+document.getElementById("profitLensBtn")
+    .addEventListener("click", showProfitLens);
 
-        <button id="salesHistoryBtn">📈</button>
-
-        <button id="profitLensBtn">📊</button>
-
-        <button id="settingsBtn">⚙️</button>
-
-    </nav>  
-
-</div>  
-`;  
-
-const page = document.getElementById("page");  
-
-function showHome() {  
-    page.innerHTML = dashboardPage();  
-}  
-
-function showMyFarm() {  
-    page.innerHTML = myFarmPage();  
-    initMyFarmPage();  
-}  
-
-function showAddFarm() {  
-    page.innerHTML = addFarmPage();  
-    initAddFarmPage();  
-}  
-
-function showAddActivity() {  
-    page.innerHTML = addActivityPage();  
-    initAddActivityPage();  
-}  
-
-function showActivities() {  
-    page.innerHTML = activityTimelinePage();  
-}  
-
-function showAddExpense() {  
-    page.innerHTML = addExpensePage();  
-    initAddExpensePage();  
-}  
-
-function showExpenseHistory() {  
-    page.innerHTML = expenseTimelinePage();  
-    initExpenseTimeline();  
-}  
-
-function showAddHarvest() {  
-    page.innerHTML = addHarvestPage();  
-    initAddHarvestPage();  
-}  
-
-function showHarvestHistory() {  
-    page.innerHTML = harvestTimelinePage();  
-    initHarvestTimeline();  
-}  
-
-function showAddSale() {
-    page.innerHTML = addSalePage();
-    initAddSalePage();
-}
-
-function showSalesHistory() {
-    page.innerHTML = salesTimelinePage();
-    initSalesTimeline();
-}
-
-function showProfitLens() {
-    page.innerHTML = profitLensPage();
-}
-
-function showSettings() {
-
-    page.innerHTML = settingsPage(() => {
-
-        document.querySelector("#app").innerHTML = loginPage();
-
-        initLoginPage(loadWorkspace);
-
-    });
-
-    initSettingsPage(() => {
-
-        document.querySelector("#app").innerHTML = loginPage();
-
-        initLoginPage(loadWorkspace);
-
-    });
-
-}
-
-showHome();  
-
-document.getElementById("homeBtn").addEventListener("click", showHome);  
-
-document.getElementById("farmBtn").addEventListener("click", showMyFarm);  
-
-document.getElementById("addFarmBtn").addEventListener("click", showAddFarm);  
-
-document.getElementById("addActivityBtn").addEventListener("click", showAddActivity);  
-
-document.getElementById("activityBtn").addEventListener("click", showActivities);  
-
-document.getElementById("expenseBtn").addEventListener("click", showAddExpense);  
-
-document.getElementById("expenseHistoryBtn").addEventListener("click", showExpenseHistory);  
-
-document.getElementById("harvestBtn").addEventListener("click", showAddHarvest);  
-
-document.getElementById("harvestHistoryBtn").addEventListener("click", showHarvestHistory);
-
-document.getElementById("saleBtn").addEventListener("click", showAddSale);
-
-document.getElementById("salesHistoryBtn").addEventListener("click", showSalesHistory);
-
-document.getElementById("profitLensBtn").addEventListener("click", showProfitLens);
-
-document.getElementById("settingsBtn").addEventListener("click", showSettings);
+document.getElementById("settingsBtn")
+    .addEventListener("click", showSettings);
 
 }
