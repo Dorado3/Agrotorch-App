@@ -1,7 +1,7 @@
 /*
 ----------------------------------------------------
 AgroTorch Farm Workspace
-Version 5.0.0
+Version 5.1.0
 ----------------------------------------------------
 */
 
@@ -10,6 +10,7 @@ import { getWorkspace } from "../../core/workspace/workspace.js";
 
 import { getFarmWeek } from "../../core/calendar/farmCalendar.js";
 import { getGrowthStage } from "../../core/calendar/growthStage.js";
+import { getEffectivePlantingDate } from "../../core/calendar/effectivePlantingDate.js";
 import { getTodayTasks } from "../../core/calendar/taskScheduler.js";
 
 import { evaluateFarmRisk } from "../../core/cdre/ruleEngine.js";
@@ -45,29 +46,8 @@ export function farmWorkspacePage() {
 
     }
 
-    console.log("ACTIVE FARM", farm);
-
     const effectivePlantingDate =
-
-        farm.productionMethod === "Nursery"
-
-            ? (
-
-                farm.transplantDate ||
-
-                farm.plantingDate ||
-
-                farm.nurseryDate
-
-            )
-
-            : (
-
-                farm.plantingDate ||
-
-                farm.nurseryDate
-
-            );
+        getEffectivePlantingDate(farm);
 
     const week =
         getFarmWeek(effectivePlantingDate);

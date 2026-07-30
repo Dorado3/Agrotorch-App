@@ -2,7 +2,7 @@
 ----------------------------------------------------
 AgroTorch Repository
 Sales Repository
-Version 3.0.0
+Version 3.1.0
 ----------------------------------------------------
 */
 
@@ -26,6 +26,8 @@ import {
 
 } from "../firestore/SalesFirestore.js";
 
+import { isToday } from "../core/date/isToday.js";
+
 export const SalesRepository = {
 
     all() {
@@ -37,6 +39,26 @@ export const SalesRepository = {
     farmSales(farmId) {
 
         return getFarmSales(farmId);
+
+    },
+
+    todaySales(farmId) {
+
+        return getFarmSales(farmId)
+
+            .filter(sale =>
+
+                isToday(
+
+                    sale.createdAt ||
+
+                    sale.date ||
+
+                    sale.timestamp
+
+                )
+
+            );
 
     },
 

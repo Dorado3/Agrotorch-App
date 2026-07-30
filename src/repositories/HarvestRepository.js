@@ -2,7 +2,7 @@
 ----------------------------------------------------
 AgroTorch Repository
 Harvest Repository
-Version 3.0.0
+Version 3.1.0
 ----------------------------------------------------
 */
 
@@ -26,6 +26,8 @@ import {
 
 } from "../firestore/HarvestFirestore.js";
 
+import { isToday } from "../core/date/isToday.js";
+
 export const HarvestRepository = {
 
     all() {
@@ -37,6 +39,26 @@ export const HarvestRepository = {
     farmHarvests(farmId) {
 
         return getFarmHarvests(farmId);
+
+    },
+
+    todayHarvests(farmId) {
+
+        return getFarmHarvests(farmId)
+
+            .filter(harvest =>
+
+                isToday(
+
+                    harvest.createdAt ||
+
+                    harvest.date ||
+
+                    harvest.timestamp
+
+                )
+
+            );
 
     },
 

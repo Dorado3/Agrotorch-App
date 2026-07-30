@@ -2,7 +2,7 @@
 ----------------------------------------------------
 AgroTorch Repository
 Expense Repository
-Version 3.0.0
+Version 3.1.0
 ----------------------------------------------------
 */
 
@@ -26,6 +26,8 @@ import {
 
 } from "../firestore/ExpenseFirestore.js";
 
+import { isToday } from "../core/date/isToday.js";
+
 export const ExpenseRepository = {
 
     all() {
@@ -37,6 +39,26 @@ export const ExpenseRepository = {
     farmExpenses(farmId) {
 
         return getFarmExpenses(farmId);
+
+    },
+
+    todayExpenses(farmId) {
+
+        return getFarmExpenses(farmId)
+
+            .filter(expense =>
+
+                isToday(
+
+                    expense.createdAt ||
+
+                    expense.date ||
+
+                    expense.timestamp
+
+                )
+
+            );
 
     },
 

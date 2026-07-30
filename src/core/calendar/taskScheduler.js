@@ -1,23 +1,30 @@
 /*
 ----------------------------------------------------
 AgroTorch Task Scheduler
-Version 1.0.0
+Version 1.1.0
 ----------------------------------------------------
 */
 
 import { getFarmWeek } from "./farmCalendar.js";
 import { getGrowthStage } from "./growthStage.js";
+import { getEffectivePlantingDate } from "./effectivePlantingDate.js";
 
 export function getTodayTasks(farm) {
 
     if (!farm)
         return [];
 
+    const effectivePlantingDate =
+        getEffectivePlantingDate(farm);
+
     const week =
-        getFarmWeek(farm.plantingDate);
+        getFarmWeek(effectivePlantingDate);
 
     const stage =
-        getGrowthStage(farm.crop, week);
+        getGrowthStage(
+            farm.crop,
+            week
+        );
 
     const tasks = [];
 

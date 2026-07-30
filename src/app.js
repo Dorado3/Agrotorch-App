@@ -20,6 +20,8 @@ import {
 
 import { farmWorkspacePage } from "./pages/farm/workspace.js";
 
+import { commandCenterPage } from "./pages/command/index.js";
+
 import {
     addFarmPage,
     initAddFarmPage
@@ -181,10 +183,10 @@ function loadAppWorkspace() {
     };
 
     const showFarmWorkspace = () => {
+ 
+        page.innerHTML = commandCenterPage();
 
-        page.innerHTML = farmWorkspacePage();
-
-    };
+     };
 
     const showAddFarm = () => {
 

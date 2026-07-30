@@ -1,51 +1,81 @@
 /*
 ----------------------------------------------------
 AgroTorch Farm Context Engine
-Version 1.0.0
+Version 5.1.0
 ----------------------------------------------------
 */
 
-let activeFarm = null;
+import { getFarmWeek } from "../calendar/farmCalendar.js";
+import { getGrowthStage } from "../calendar/growthStage.js";
+import { getEffectivePlantingDate } from "../calendar/effectivePlantingDate.js";
 
-export function setActiveFarm(farm) {
+import { getWeatherContext } from "../weather/weatherEngine.js";
 
-    activeFarm = farm;
+import { evaluateDiseaseRisk } from "../disease/diseaseRiskEngine.js";
+import { evaluatePestRisk } from "../pest/pestRiskEngine.js";
 
-    localStorage.setItem(
-        "agrotorch_active_farm",
-        JSON.stringify(farm)
-    );
+import { evaluateProfit } from "../profit/profitEngine.js";
 
-}
+import { buildFarmDashboard } from "../dashboard/farmDashboard.js";
 
-export function getActiveFarm() {
+export function buildFarmContext(farm) {
 
-    if (activeFarm) {
+    const effectivePlantingDate =
+        getEffectivePlantingDate(farm);
 
-        return activeFarm;
+    const week =
+        getFarmWeek(effectivePlantingDate);
 
-    }
+    const stage =
+        getGrowthStage(
+            farm.crop,
+            week
+        );
 
-    const stored = localStorage.getItem(
-        "agrotorch_active_farm"
-    );
+    const weather =
+        getWeatherContext(farm);
 
-    if (stored) {
+    const dashboard =
+        buildFarmDashboard();
 
-        activeFarm = JSON.parse(stored);
+    const context = {
 
-    }
+        farm,
 
-    return activeFarm;
+        crop:
+            farm.crop,
 
-}
+        variety:
+            farm.variety || "",
 
-export function clearActiveFarm() {
+        plantingDate:
+            effectivePlantingDate,
 
-    activeFarm = null;
+        week,
 
-    localStorage.removeItem(
-        "agrotorch_active_farm"
-    );
+        stage,
+
+        weather,
+
+        dashboard,
+
+        timestamp:
+            new Date().toISOString()
+
+    };
+
+    context.disease =
+        evaluateDiseaseRisk(context);
+
+    context.pest =
+        evaluatePestRisk(context);
+
+    context.profit =
+        evaluateProfit(
+            context,
+            dashboard
+        );
+
+    return context;
 
 }

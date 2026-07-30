@@ -2,7 +2,7 @@
 ----------------------------------------------------
 AgroTorch Repository
 Activity Repository
-Version 3.0.0
+Version 3.1.0
 ----------------------------------------------------
 */
 
@@ -27,6 +27,8 @@ import {
     getFarmActivitiesCloud
 
 } from "../firestore/ActivityFirestore.js";
+
+import { isToday } from "../core/date/isToday.js";
 
 export const ActivityRepository = {
 
@@ -53,6 +55,26 @@ export const ActivityRepository = {
     farmActivities(farmId) {
 
         return getFarmActivities(farmId);
+
+    },
+
+    todayActivities(farmId) {
+
+        return getFarmActivities(farmId)
+
+            .filter(activity =>
+
+                isToday(
+
+                    activity.createdAt ||
+
+                    activity.date ||
+
+                    activity.timestamp
+
+                )
+
+            );
 
     },
 
