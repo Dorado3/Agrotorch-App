@@ -1,4 +1,5 @@
 import { saveHarvest } from "../services/harvestStorage.js";
+import { getWorkspace } from "../core/workspace/workspace.js";
 
 export function addHarvestPage() {
 
@@ -20,7 +21,6 @@ export function addHarvestPage() {
             <input
                 type="text"
                 id="crop"
-                placeholder="e.g Tomato"
                 required
             >
 
@@ -40,15 +40,15 @@ export function addHarvestPage() {
 
                 <option>Tonnes</option>
 
+                <option>Crates</option>
+
                 <option>Baskets</option>
 
                 <option>Bags</option>
 
-                <option>Crates</option>
-
             </select>
 
-            <label>Harvest Date</label>
+            <label>Date</label>
 
             <input
                 type="date"
@@ -81,7 +81,8 @@ export function addHarvestPage() {
 
 export function initAddHarvestPage() {
 
-    const form = document.getElementById("harvestForm");
+    const form =
+        document.getElementById("harvestForm");
 
     if (!form) return;
 
@@ -89,13 +90,31 @@ export function initAddHarvestPage() {
 
         e.preventDefault();
 
+        const workspace =
+            getWorkspace();
+
+        const farm =
+            workspace.activeFarm;
+
+        if (!farm){
+
+            alert("Please select a farm first.");
+
+            return;
+
+        }
+
         const harvest = {
+
+            farmId: farm.id,
+
+            farmName: farm.farmName,
 
             crop:
                 document.getElementById("crop").value,
 
             quantity:
-                document.getElementById("quantity").value,
+                Number(document.getElementById("quantity").value),
 
             unit:
                 document.getElementById("unit").value,

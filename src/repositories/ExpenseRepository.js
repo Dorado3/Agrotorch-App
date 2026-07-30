@@ -2,13 +2,15 @@
 ----------------------------------------------------
 AgroTorch Repository
 Expense Repository
-Version 2.0.0
+Version 3.0.0
 ----------------------------------------------------
 */
 
 import {
 
     getExpenses,
+
+    getFarmExpenses,
 
     saveExpense,
 
@@ -29,6 +31,12 @@ export const ExpenseRepository = {
     all() {
 
         return getExpenses();
+
+    },
+
+    farmExpenses(farmId) {
+
+        return getFarmExpenses(farmId);
 
     },
 

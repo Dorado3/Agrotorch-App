@@ -2,13 +2,15 @@
 ----------------------------------------------------
 AgroTorch Repository
 Harvest Repository
-Version 2.0.0
+Version 3.0.0
 ----------------------------------------------------
 */
 
 import {
 
     getHarvests,
+
+    getFarmHarvests,
 
     saveHarvest,
 
@@ -29,6 +31,12 @@ export const HarvestRepository = {
     all() {
 
         return getHarvests();
+
+    },
+
+    farmHarvests(farmId) {
+
+        return getFarmHarvests(farmId);
 
     },
 

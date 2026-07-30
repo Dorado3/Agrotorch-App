@@ -1,7 +1,7 @@
 /*
 ----------------------------------------------------
 AgroTorch Farm Hub
-Version 5.3.0
+Version 5.4.0
 ----------------------------------------------------
 */
 
@@ -81,14 +81,10 @@ export function initMyFarmPage() {
 
                 setActiveFarm(farm);
 
-                console.log(
-                    "Active Farm:",
-                    farm
-                );
+                console.log("Active Farm:", farm);
 
-                alert(
-                    "✅ Active Farm Selected\n\n" +
-                    farm.farmName
+                window.dispatchEvent(
+                    new CustomEvent("farm-selected")
                 );
 
             });

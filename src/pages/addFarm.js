@@ -1,127 +1,315 @@
 import { FarmRepository } from "../repositories/FarmRepository.js";
 import { auth } from "../core/config/firebase.js";
+import { CropRegistry } from "../core/crops/cropRegistry.js";
+
 import "../styles/dashboard.css";
 
 export function addFarmPage() {
-  return `
+
+    const cropOptions = CropRegistry.map(crop => `
+
+        <option value="${crop.id}">
+
+            ${crop.name}
+
+        </option>
+
+    `).join("");
+
+    return `
+
     <section class="dashboard">
 
-      <div class="hero-card">
-        <h2>🌾 Register a New Farm</h2>
-        <p>Create a new farm profile.</p>
-      </div>
+        <div class="hero-card">
 
-      <form id="farmForm" class="farm-form">
+            <h2>🌾 Register a New Farm</h2>
 
-        <label>Farm Name</label>
-        <input type="text" id="farmName" required>
+            <p>Create a new farm profile.</p>
 
-        <label>Owner Name</label>
-        <input type="text" id="ownerName" required>
+        </div>
 
-        <label>State</label>
-        <input type="text" id="state" required>
+        <form id="farmForm" class="farm-form">
 
-        <label>LGA</label>
-        <input type="text" id="lga" required>
+            <label>Farm Name</label>
 
-        <label>Farm Size (Acres)</label>
-        <input type="number" id="farmSize" required>
+            <input
+                type="text"
+                id="farmName"
+                required
+            >
 
-        <label>Crop</label>
-        <input
-          type="text"
-          id="crop"
-          placeholder="e.g. Tomato, Pepper, Maize"
-          required
-        >
+            <label>Owner Name</label>
 
-        <label>Variety</label>
-        <input type="text" id="variety">
+            <input
+                type="text"
+                id="ownerName"
+                required
+            >
 
-        <label>Planting Date</label>
-        <input type="date" id="plantingDate">
+            <label>State</label>
 
-        <button type="submit" class="action-btn">
-          💾 Save Farm
-        </button>
+            <input
+                type="text"
+                id="state"
+                required
+            >
 
-      </form>
+            <label>LGA</label>
 
-      <div id="saveMessage"></div>
+            <input
+                type="text"
+                id="lga"
+                required
+            >
+
+            <label>Farm Size (Acres)</label>
+
+            <input
+                type="number"
+                id="farmSize"
+                required
+            >
+
+            <label>Crop</label>
+
+            <select
+                id="crop"
+                required
+            >
+
+                ${cropOptions}
+
+            </select>
+
+            <div
+                id="otherCropContainer"
+                style="display:none;"
+            >
+
+                <label>Specify Crop</label>
+
+                <input
+                    type="text"
+                    id="otherCrop"
+                    placeholder="Enter crop name"
+                >
+
+            </div>
+
+            <label>Variety</label>
+
+            <input
+                type="text"
+                id="variety"
+            >
+<div id="nurseryContainer">
+
+                <label>Nursery Date</label>
+
+                <input
+                    type="date"
+                    id="nurseryDate"
+                >
+
+                <label>Transplant Date</label>
+
+                <input
+                    type="date"
+                    id="transplantDate"
+                >
+
+            </div>
+
+            <div
+                id="plantingContainer"
+                style="display:none;"
+            >
+
+                <label>Planting Date</label>
+
+                <input
+                    type="date"
+                    id="plantingDate"
+                >
+
+            </div>
+
+            <button
+                type="submit"
+                class="action-btn"
+            >
+
+                💾 Save Farm
+
+            </button>
+
+        </form>
+
+        <div id="saveMessage"></div>
 
     </section>
-  `;
+
+    `;
+
 }
 
 export function initAddFarmPage() {
 
-  const form = document.getElementById("farmForm");
+    const form =
+        document.getElementById("farmForm");
 
-  if (!form) return;
+    if (!form) return;
 
-  form.addEventListener("submit", async function (e) {
+    const cropSelect =
+        document.getElementById("crop");
 
-    e.preventDefault();
+    const nurseryContainer =
+        document.getElementById("nurseryContainer");
 
-    const currentUser = auth.currentUser;
+    const plantingContainer =
+        document.getElementById("plantingContainer");
 
-    if (!currentUser) {
+    const otherCropContainer =
+        document.getElementById("otherCropContainer");
 
-      document.getElementById("saveMessage").innerHTML = `
-        <p style="color:red;margin-top:20px;font-weight:bold;">
-          Please login first.
-        </p>
-      `;
+    function updateCropFields() {
 
-      return;
+        const cropId = cropSelect.value;
 
-    }
+        const crop =
+            CropRegistry.find(c => c.id === cropId);
 
-    const farm = {
+        otherCropContainer.style.display =
+            cropId === "other"
+                ? "block"
+                : "none";
 
-      farmName: document.getElementById("farmName").value.trim(),
+        if (
+            crop &&
+            crop.productionMethod === "Nursery"
+        ) {
 
-      ownerName: document.getElementById("ownerName").value.trim(),
+            nurseryContainer.style.display =
+                "block";
 
-      state: document.getElementById("state").value.trim(),
+            plantingContainer.style.display =
+                "none";
 
-      lga: document.getElementById("lga").value.trim(),
+        } else {
 
-      size: Number(document.getElementById("farmSize").value),
+            nurseryContainer.style.display =
+                "none";
 
-      crop: document.getElementById("crop").value.trim(),
+            plantingContainer.style.display =
+                "block";
 
-      variety: document.getElementById("variety").value.trim(),
-
-      plantingDate: document.getElementById("plantingDate").value
-
-    };
-
-    try {
-
-      await FarmRepository.create(currentUser.uid, farm);
-
-      form.reset();
-
-      document.getElementById("saveMessage").innerHTML = `
-        <p style="color:green;margin-top:20px;font-weight:bold;">
-          ✅ Farm saved successfully.
-        </p>
-      `;
-
-    } catch (error) {
-
-      console.error(error);
-
-      document.getElementById("saveMessage").innerHTML = `
-        <p style="color:red;margin-top:20px;font-weight:bold;">
-          ❌ Failed to save farm.
-        </p>
-      `;
+        }
 
     }
 
-  });
+    updateCropFields();
+
+    cropSelect.addEventListener(
+        "change",
+        updateCropFields
+    );
+form.addEventListener("submit", async function (e) {
+
+        e.preventDefault();
+
+        const currentUser = auth.currentUser;
+
+        if (!currentUser) {
+
+            document.getElementById("saveMessage").innerHTML = `
+                <p style="color:red;margin-top:20px;font-weight:bold;">
+                    Please login first.
+                </p>
+            `;
+
+            return;
+
+        }
+
+        const cropId =
+            document.getElementById("crop").value;
+
+        const registryCrop =
+            CropRegistry.find(c => c.id === cropId);
+
+        const cropName =
+            cropId === "other"
+                ? document.getElementById("otherCrop").value.trim()
+                : registryCrop.name;
+
+        const farm = {
+
+            farmName:
+                document.getElementById("farmName").value.trim(),
+
+            ownerName:
+                document.getElementById("ownerName").value.trim(),
+
+            state:
+                document.getElementById("state").value.trim(),
+
+            lga:
+                document.getElementById("lga").value.trim(),
+
+            size:
+                Number(document.getElementById("farmSize").value),
+
+            cropId,
+
+            crop:
+                cropName,
+
+            variety:
+                document.getElementById("variety").value.trim(),
+
+            productionMethod:
+                registryCrop.productionMethod,
+
+            nurseryDate:
+                document.getElementById("nurseryDate").value,
+
+            transplantDate:
+                document.getElementById("transplantDate").value,
+
+            plantingDate:
+                document.getElementById("plantingDate").value
+
+        };
+
+        try {
+
+            await FarmRepository.create(
+                currentUser.uid,
+                farm
+            );
+
+            form.reset();
+
+            updateCropFields();
+
+            document.getElementById("saveMessage").innerHTML = `
+                <p style="color:green;margin-top:20px;font-weight:bold;">
+                    ✅ Farm saved successfully.
+                </p>
+            `;
+
+        } catch (error) {
+
+            console.error(error);
+
+            document.getElementById("saveMessage").innerHTML = `
+                <p style="color:red;margin-top:20px;font-weight:bold;">
+                    ❌ Failed to save farm.
+                </p>
+            `;
+
+        }
+
+    });
 
 }

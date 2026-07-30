@@ -1,63 +1,49 @@
 import { saveActivity } from "../services/activityStorage.js";
-import { getFarms } from "../services/farmStorage.js";
+import { getWorkspace } from "../core/workspace/workspace.js";
 
 export function addActivityPage() {
 
-    const farms = getFarms();
-
     return `
-
     <section class="dashboard">
 
-        <h2>📋 Add Activity</h2>
+        <div class="hero-card">
 
-        <form id="activityForm">
+            <h2>📝 Record Activity</h2>
 
-            <label>Farm</label>
+            <p>Record today's farm activity.</p>
 
-            <select id="farmName">
+        </div>
 
-                ${farms.map(farm => `
-                    <option value="${farm.farmName}">
-                        ${farm.farmName}
-                    </option>
-                `).join("")}
-
-            </select>
+        <form id="activityForm" class="farm-form">
 
             <label>Activity</label>
 
-            <select id="activityType">
+            <input
+                type="text"
+                id="activity"
+                required
+            >
 
-                <option>Irrigation</option>
+            <label>Date</label>
 
-                <option>Fertigation</option>
-
-                <option>Spraying</option>
-
-                <option>Harvest</option>
-
-                <option>Planting</option>
-
-                <option>Labour</option>
-
-                <option>Expense</option>
-
-            </select>
+            <input
+                type="date"
+                id="activityDate"
+                required
+            >
 
             <label>Notes</label>
 
             <textarea
                 id="notes"
-                placeholder="Describe what happened..."
+                rows="3"
             ></textarea>
 
             <button
-                class="agro-btn"
-                type="submit">
-
-                Save Activity
-
+                type="submit"
+                class="action-btn"
+            >
+                💾 Save Activity
             </button>
 
         </form>
@@ -65,47 +51,60 @@ export function addActivityPage() {
         <div id="activityMessage"></div>
 
     </section>
-
     `;
 
 }
 
-export function initAddActivityPage(){
+export function initAddActivityPage() {
 
-    const form = document.getElementById("activityForm");
+    const form =
+        document.getElementById("activityForm");
 
-    if(!form) return;
+    if (!form) return;
 
-    form.addEventListener("submit",(e)=>{
+    form.addEventListener("submit", function(e){
 
         e.preventDefault();
 
-        saveActivity({
+        const workspace =
+            getWorkspace();
 
-            farmName:
-            document.getElementById("farmName").value,
+        const farm =
+            workspace.activeFarm;
+
+        if (!farm){
+
+            alert("Please select a farm first.");
+
+            return;
+
+        }
+
+        const activity = {
+
+            farmId: farm.id,
+
+            farmName: farm.farmName,
 
             activity:
-            document.getElementById("activityType").value,
+                document.getElementById("activity").value,
+
+            date:
+                document.getElementById("activityDate").value,
 
             notes:
-            document.getElementById("notes").value,
+                document.getElementById("notes").value
 
-            createdAt:
-            new Date().toISOString()
+        };
 
-        });
+        saveActivity(activity);
 
         form.reset();
 
-        document.getElementById("activityMessage").innerHTML=`
-
-        <p style="color:green">
-
-        ✅ Activity Saved
-
-        </p>
-
+        document.getElementById("activityMessage").innerHTML = `
+            <p style="color:green;font-weight:bold;margin-top:20px;">
+                ✅ Activity Saved Successfully
+            </p>
         `;
 
     });

@@ -1,4 +1,5 @@
 import { saveExpense } from "../services/expenseStorage.js";
+import { getWorkspace } from "../core/workspace/workspace.js";
 
 export function addExpensePage() {
 
@@ -7,7 +8,7 @@ export function addExpensePage() {
 
         <div class="hero-card">
 
-            <h2>💰 Add Expense</h2>
+            <h2>💰 Record Expense</h2>
 
             <p>Record farm expenses.</p>
 
@@ -15,29 +16,13 @@ export function addExpensePage() {
 
         <form id="expenseForm" class="farm-form">
 
-            <label>Expense Type</label>
+            <label>Expense</label>
 
-            <select id="expenseType" required>
-
-                <option value="">Select Expense</option>
-
-                <option>Seeds</option>
-
-                <option>Fertilizer</option>
-
-                <option>Chemicals</option>
-
-                <option>Labour</option>
-
-                <option>Diesel</option>
-
-                <option>Machinery Hire</option>
-
-                <option>Transport</option>
-
-                <option>Miscellaneous</option>
-
-            </select>
+            <input
+                type="text"
+                id="expenseTitle"
+                required
+            >
 
             <label>Amount (₦)</label>
 
@@ -60,7 +45,6 @@ export function addExpensePage() {
             <textarea
                 id="notes"
                 rows="3"
-                placeholder="Optional"
             ></textarea>
 
             <button
@@ -81,7 +65,8 @@ export function addExpensePage() {
 
 export function initAddExpensePage() {
 
-    const form = document.getElementById("expenseForm");
+    const form =
+        document.getElementById("expenseForm");
 
     if (!form) return;
 
@@ -89,13 +74,31 @@ export function initAddExpensePage() {
 
         e.preventDefault();
 
+        const workspace =
+            getWorkspace();
+
+        const farm =
+            workspace.activeFarm;
+
+        if (!farm){
+
+            alert("Please select a farm first.");
+
+            return;
+
+        }
+
         const expense = {
 
-            type:
-                document.getElementById("expenseType").value,
+            farmId: farm.id,
+
+            farmName: farm.farmName,
+
+            title:
+                document.getElementById("expenseTitle").value,
 
             amount:
-                document.getElementById("amount").value,
+                Number(document.getElementById("amount").value),
 
             date:
                 document.getElementById("expenseDate").value,

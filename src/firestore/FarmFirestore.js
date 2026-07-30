@@ -2,30 +2,23 @@
 ----------------------------------------------------
 AgroTorch Firestore
 Farm Service
-Version 2.0.0
+Version 3.0.0
 ----------------------------------------------------
 */
 
 import {
-
     collection,
-
     addDoc,
-
     getDocs,
-
     query,
-
     where,
-
     serverTimestamp
-
 } from "firebase/firestore";
 
 import { db } from "../core/config/firebase.js";
 
-const farmsCollection = collection(db, "farms");
-
+const farmsCollection =
+    collection(db, "farms");
 
 export async function createFarm(ownerId, farm) {
 
@@ -33,24 +26,57 @@ export async function createFarm(ownerId, farm) {
 
         ownerId,
 
-        farmName: farm.farmName || "",
+        farmName:
+            farm.farmName || "",
 
-        crop: farm.crop || "",
+        ownerName:
+            farm.ownerName || "",
 
-        location: farm.location || "",
+        state:
+            farm.state || "",
 
-        size: farm.size || "",
+        lga:
+            farm.lga || "",
 
-        status: "active",
+        crop:
+            farm.crop || "",
 
-        createdAt: serverTimestamp(),
+        cropId:
+            farm.cropId || "",
 
-        updatedAt: serverTimestamp()
+        variety:
+            farm.variety || "",
+
+        productionMethod:
+            farm.productionMethod || "Direct",
+
+        nurseryDate:
+            farm.nurseryDate || "",
+
+        transplantDate:
+            farm.transplantDate || "",
+
+        plantingDate:
+            farm.plantingDate || "",
+
+        size:
+            farm.size || 0,
+
+        location:
+            farm.location || "",
+
+        status:
+            "active",
+
+        createdAt:
+            serverTimestamp(),
+
+        updatedAt:
+            serverTimestamp()
 
     });
 
 }
-
 
 export async function getUserFarms(ownerId) {
 
@@ -58,15 +84,16 @@ export async function getUserFarms(ownerId) {
 
         farmsCollection,
 
-        where("ownerId", "==", ownerId)
+        where("ownerId","==",ownerId)
 
     );
 
-    const snapshot = await getDocs(q);
+    const snapshot =
+        await getDocs(q);
 
-    return snapshot.docs.map(doc => ({
+    return snapshot.docs.map(doc=>({
 
-        id: doc.id,
+        id:doc.id,
 
         ...doc.data()
 
@@ -74,14 +101,14 @@ export async function getUserFarms(ownerId) {
 
 }
 
+export async function getAllFarms(){
 
-export async function getAllFarms() {
+    const snapshot =
+        await getDocs(farmsCollection);
 
-    const snapshot = await getDocs(farmsCollection);
+    return snapshot.docs.map(doc=>({
 
-    return snapshot.docs.map(doc => ({
-
-        id: doc.id,
+        id:doc.id,
 
         ...doc.data()
 

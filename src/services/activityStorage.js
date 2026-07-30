@@ -1,8 +1,7 @@
 /*
 ----------------------------------------------------
-AgroTorch AgriOS
-Activity Storage Service
-Version 2.0.0
+AgroTorch Activity Storage
+Version 3.0.0
 ----------------------------------------------------
 */
 
@@ -15,9 +14,20 @@ export function getActivities() {
     const activities =
         JSON.parse(localStorage.getItem(STORAGE_KEY) || "[]");
 
-    const userId = getCurrentUserId();
+    const userId =
+        getCurrentUserId();
 
-    return activities.filter(activity => activity.userId === userId);
+    return activities.filter(activity =>
+        activity.userId === userId
+    );
+
+}
+
+export function getFarmActivities(farmId) {
+
+    return getActivities().filter(activity =>
+        activity.farmId === farmId
+    );
 
 }
 
@@ -26,7 +36,17 @@ export function saveActivity(activity) {
     const activities =
         JSON.parse(localStorage.getItem(STORAGE_KEY) || "[]");
 
-    activity.userId = getCurrentUserId();
+    activity.id =
+        crypto.randomUUID();
+
+    activity.userId =
+        getCurrentUserId();
+
+    activity.createdAt =
+        new Date().toISOString();
+
+    activity.updatedAt =
+        new Date().toISOString();
 
     activities.push(activity);
 
@@ -37,32 +57,25 @@ export function saveActivity(activity) {
 
 }
 
-export function getFarmActivities(farmName) {
-
-    return getActivities().filter(activity =>
-        activity.farmName === farmName
-    );
-
-}
-
-export function deleteActivity(index) {
+export function deleteActivity(id) {
 
     const activities =
         JSON.parse(localStorage.getItem(STORAGE_KEY) || "[]");
 
-    const userId = getCurrentUserId();
-
-    const myActivities =
-        activities.filter(activity => activity.userId === userId);
-
-    const activityToDelete = myActivities[index];
-
     const updated =
-        activities.filter(activity => activity !== activityToDelete);
+        activities.filter(activity =>
+            activity.id !== id
+        );
 
     localStorage.setItem(
         STORAGE_KEY,
         JSON.stringify(updated)
     );
+
+}
+
+export function clearActivities() {
+
+    localStorage.removeItem(STORAGE_KEY);
 
 }

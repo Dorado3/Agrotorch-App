@@ -1,7 +1,7 @@
 /*
 ----------------------------------------------------
 AgroTorch Application Kernel
-Version 3.0.0
+Version 5.4.0
 ----------------------------------------------------
 */
 
@@ -17,6 +17,8 @@ import {
     myFarmPage,
     initMyFarmPage
 } from "./pages/myfarm.js";
+
+import { farmWorkspacePage } from "./pages/farm/workspace.js";
 
 import {
     addFarmPage,
@@ -111,9 +113,10 @@ export function startApp() {
     });
 
 }
+
 function loadAppWorkspace() {
 
-document.querySelector("#app").innerHTML = `
+    document.querySelector("#app").innerHTML = `
 
 <div class="app">
 
@@ -161,157 +164,165 @@ document.querySelector("#app").innerHTML = `
 
 `;
 
-const page = document.getElementById("page");
+    const page = document.getElementById("page");
 
-const showHome = () => {
+    const showHome = () => {
 
-page.innerHTML = dashboardPage();
+        page.innerHTML = dashboardPage();
 
-};
+    };
 
-const showMyFarm = async () => {
+    const showMyFarm = async () => {
 
-await renderPage(page, myFarmPage);
+        await renderPage(page, myFarmPage);
 
-initMyFarmPage();
+        initMyFarmPage();
 
-};
+    };
 
-const showAddFarm = () => {
+    const showFarmWorkspace = () => {
 
-page.innerHTML = addFarmPage();
+        page.innerHTML = farmWorkspacePage();
 
-initAddFarmPage();
+    };
 
-};
+    const showAddFarm = () => {
 
-const showAddActivity = () => {
+        page.innerHTML = addFarmPage();
 
-page.innerHTML = addActivityPage();
+        initAddFarmPage();
 
-initAddActivityPage();
+    };
 
-};
+    const showAddActivity = () => {
 
-const showActivities = () => {
+        page.innerHTML = addActivityPage();
 
-page.innerHTML = activityTimelinePage();
+        initAddActivityPage();
 
-};
+    };
 
-const showAddExpense = () => {
+    const showActivities = () => {
 
-page.innerHTML = addExpensePage();
+        page.innerHTML = activityTimelinePage();
 
-initAddExpensePage();
+    };
 
-};
+    const showAddExpense = () => {
 
-const showExpenseHistory = () => {
+        page.innerHTML = addExpensePage();
 
-page.innerHTML = expenseTimelinePage();
+        initAddExpensePage();
 
-initExpenseTimeline();
+    };
 
-};
+    const showExpenseHistory = () => {
 
-const showAddHarvest = () => {
+        page.innerHTML = expenseTimelinePage();
 
-page.innerHTML = addHarvestPage();
+        initExpenseTimeline();
 
-initAddHarvestPage();
+    };
 
-};
+    const showAddHarvest = () => {
 
-const showHarvestHistory = () => {
+        page.innerHTML = addHarvestPage();
 
-page.innerHTML = harvestTimelinePage();
+        initAddHarvestPage();
 
-initHarvestTimeline();
+    };
 
-};
+    const showHarvestHistory = () => {
 
-const showAddSale = () => {
+        page.innerHTML = harvestTimelinePage();
 
-page.innerHTML = addSalePage();
+        initHarvestTimeline();
 
-initAddSalePage();
+    };
 
-};
+    const showAddSale = () => {
 
-const showSalesHistory = () => {
+        page.innerHTML = addSalePage();
 
-page.innerHTML = salesTimelinePage();
+        initAddSalePage();
 
-initSalesTimeline();
+    };
 
-};
+    const showSalesHistory = () => {
 
-const showProfitLens = () => {
+        page.innerHTML = salesTimelinePage();
 
-page.innerHTML = profitLensPage();
+        initSalesTimeline();
 
-};
+    };
 
-const showSettings = () => {
+    const showProfitLens = () => {
 
-page.innerHTML = settingsPage();
+        page.innerHTML = profitLensPage();
 
-initSettingsPage(() => {
+    };
 
-document.querySelector("#app").innerHTML = loginPage();
+    const showSettings = () => {
 
-initLoginPage(async () => {
+        page.innerHTML = settingsPage();
 
-await initializeWorkspace();
+        initSettingsPage(() => {
 
-loadAppWorkspace();
+            document.querySelector("#app").innerHTML = loginPage();
 
-});
+            initLoginPage(async () => {
 
-});
+                await initializeWorkspace();
 
-};
+                loadAppWorkspace();
 
-showHome();
+            });
 
-document.getElementById("homeBtn")
-    .addEventListener("click", showHome);
+        });
 
-document.getElementById("farmBtn")
-    .addEventListener("click", showMyFarm);
+    };
 
-document.getElementById("addFarmBtn")
-    .addEventListener("click", showAddFarm);
+    showHome();
 
-document.getElementById("addActivityBtn")
-    .addEventListener("click", showAddActivity);
+    window.addEventListener("farm-selected", showFarmWorkspace);
 
-document.getElementById("activityBtn")
-    .addEventListener("click", showActivities);
+    document.getElementById("homeBtn")
+        .addEventListener("click", showHome);
 
-document.getElementById("expenseBtn")
-    .addEventListener("click", showAddExpense);
+    document.getElementById("farmBtn")
+        .addEventListener("click", showMyFarm);
 
-document.getElementById("expenseHistoryBtn")
-    .addEventListener("click", showExpenseHistory);
+    document.getElementById("addFarmBtn")
+        .addEventListener("click", showAddFarm);
 
-document.getElementById("harvestBtn")
-    .addEventListener("click", showAddHarvest);
+    document.getElementById("addActivityBtn")
+        .addEventListener("click", showAddActivity);
 
-document.getElementById("harvestHistoryBtn")
-    .addEventListener("click", showHarvestHistory);
+    document.getElementById("activityBtn")
+        .addEventListener("click", showActivities);
 
-document.getElementById("saleBtn")
-    .addEventListener("click", showAddSale);
+    document.getElementById("expenseBtn")
+        .addEventListener("click", showAddExpense);
 
-document.getElementById("salesHistoryBtn")
-    .addEventListener("click", showSalesHistory);
+    document.getElementById("expenseHistoryBtn")
+        .addEventListener("click", showExpenseHistory);
 
-document.getElementById("profitLensBtn")
-    .addEventListener("click", showProfitLens);
+    document.getElementById("harvestBtn")
+        .addEventListener("click", showAddHarvest);
 
-document.getElementById("settingsBtn")
-    .addEventListener("click", showSettings);
+    document.getElementById("harvestHistoryBtn")
+        .addEventListener("click", showHarvestHistory);
+
+    document.getElementById("saleBtn")
+        .addEventListener("click", showAddSale);
+
+    document.getElementById("salesHistoryBtn")
+        .addEventListener("click", showSalesHistory);
+
+    document.getElementById("profitLensBtn")
+        .addEventListener("click", showProfitLens);
+
+    document.getElementById("settingsBtn")
+        .addEventListener("click", showSettings);
 
 }

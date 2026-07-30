@@ -2,7 +2,7 @@
 ----------------------------------------------------
 AgroTorch Repository
 Activity Repository
-Version 2.0.0
+Version 3.0.0
 ----------------------------------------------------
 */
 
@@ -42,29 +42,29 @@ export const ActivityRepository = {
 
     },
 
-    create(activity) {
+    async create(activity) {
 
         saveActivity(activity);
 
-        return saveActivityCloud(activity);
+        return await saveActivityCloud(activity);
 
     },
 
-    farmActivities(farmName) {
+    farmActivities(farmId) {
 
-        return getFarmActivities(farmName);
-
-    },
-
-    async farmActivitiesCloud(farmName) {
-
-        return await getFarmActivitiesCloud(farmName);
+        return getFarmActivities(farmId);
 
     },
 
-    delete(index) {
+    async farmActivitiesCloud(farmId) {
 
-        return deleteActivity(index);
+        return await getFarmActivitiesCloud(farmId);
+
+    },
+
+    delete(id) {
+
+        return deleteActivity(id);
 
     }
 

@@ -1,3 +1,10 @@
+/*
+----------------------------------------------------
+AgroTorch Sales Storage
+Version 3.0.0
+----------------------------------------------------
+*/
+
 import { getCurrentUserId } from "./userService.js";
 
 const STORAGE_KEY = "agrotorch_sales";
@@ -7,9 +14,20 @@ export function getSales() {
     const sales =
         JSON.parse(localStorage.getItem(STORAGE_KEY) || "[]");
 
-    const userId = getCurrentUserId();
+    const userId =
+        getCurrentUserId();
 
-    return sales.filter(sale => sale.userId === userId);
+    return sales.filter(sale =>
+        sale.userId === userId
+    );
+
+}
+
+export function getFarmSales(farmId) {
+
+    return getSales().filter(sale =>
+        sale.farmId === farmId
+    );
 
 }
 
@@ -18,9 +36,17 @@ export function saveSale(sale) {
     const sales =
         JSON.parse(localStorage.getItem(STORAGE_KEY) || "[]");
 
-    sale.id = Date.now();
+    sale.id =
+        crypto.randomUUID();
 
-    sale.userId = getCurrentUserId();
+    sale.userId =
+        getCurrentUserId();
+
+    sale.createdAt =
+        new Date().toISOString();
+
+    sale.updatedAt =
+        new Date().toISOString();
 
     sales.push(sale);
 
@@ -37,14 +63,9 @@ export function deleteSale(id) {
         JSON.parse(localStorage.getItem(STORAGE_KEY) || "[]");
 
     const updated =
-        sales.filter(sale => {
-
-            return !(
-                sale.id === id &&
-                sale.userId === getCurrentUserId()
-            );
-
-        });
+        sales.filter(sale =>
+            sale.id !== id
+        );
 
     localStorage.setItem(
         STORAGE_KEY,

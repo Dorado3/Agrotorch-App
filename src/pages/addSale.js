@@ -1,4 +1,5 @@
 import { saveSale } from "../services/salesStorage.js";
+import { getWorkspace } from "../core/workspace/workspace.js";
 
 export function addSalePage() {
 
@@ -83,13 +84,28 @@ export function addSalePage() {
 
 export function initAddSalePage() {
 
-    const form = document.getElementById("saleForm");
+    const form =
+        document.getElementById("saleForm");
 
     if (!form) return;
 
     form.addEventListener("submit", function(e){
 
         e.preventDefault();
+
+        const workspace =
+            getWorkspace();
+
+        const farm =
+            workspace.activeFarm;
+
+        if (!farm){
+
+            alert("Please select a farm first.");
+
+            return;
+
+        }
 
         const quantity =
             Number(document.getElementById("quantity").value);
@@ -98,6 +114,10 @@ export function initAddSalePage() {
             Number(document.getElementById("unitPrice").value);
 
         const sale = {
+
+            farmId: farm.id,
+
+            farmName: farm.farmName,
 
             buyer:
                 document.getElementById("buyer").value,

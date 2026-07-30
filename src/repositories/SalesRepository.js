@@ -2,13 +2,15 @@
 ----------------------------------------------------
 AgroTorch Repository
 Sales Repository
-Version 2.0.0
+Version 3.0.0
 ----------------------------------------------------
 */
 
 import {
 
     getSales,
+
+    getFarmSales,
 
     saveSale,
 
@@ -29,6 +31,12 @@ export const SalesRepository = {
     all() {
 
         return getSales();
+
+    },
+
+    farmSales(farmId) {
+
+        return getFarmSales(farmId);
 
     },
 
