@@ -1,11 +1,17 @@
 /*
 ----------------------------------------------------
 AgroTorch CDRE Decision Card
-Version 1.0.0
+Version 3.0.0
 ----------------------------------------------------
 */
 
 export function decisionCard(context) {
+
+    const execution =
+        context.execution;
+
+    const coach =
+        context.coach;
 
     return `
 
@@ -47,17 +53,13 @@ export function decisionCard(context) {
 
         <hr>
 
-        <h3>
-
-            🎯 Mission
-
-        </h3>
+        <h3>🎯 Mission</h3>
 
         <p>
 
             <strong>
 
-            ${context.mission.title}
+                ${context.mission.title}
 
             </strong>
 
@@ -69,15 +71,9 @@ export function decisionCard(context) {
 
         </p>
 
-        <hr>
-
         <p>
 
-            <strong>
-
-            Expected Impact
-
-            </strong>
+            <strong>Expected Impact</strong>
 
         </p>
 
@@ -86,6 +82,52 @@ export function decisionCard(context) {
             ${context.mission.impact}
 
         </p>
+
+        <hr>
+
+        <h3>🤖 AI Coach</h3>
+
+        <p>
+
+            <strong>
+
+                ${coach.title}
+
+            </strong>
+
+        </p>
+
+        <p>
+
+            ${coach.message}
+
+        </p>
+
+        <hr>
+
+        <h3>✅ Today's Progress</h3>
+
+        ${execution.checklist.map(item => `
+
+            <p>
+
+                ${item.completed ? "✅" : "⬜"}
+
+                ${item.title}
+
+            </p>
+
+        `).join("")}
+
+        <hr>
+
+        <h3>📊 Execution Score</h3>
+
+        <h2>
+
+            ${execution.score}%
+
+        </h2>
 
     </div>
 

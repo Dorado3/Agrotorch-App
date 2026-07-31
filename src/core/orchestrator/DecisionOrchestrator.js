@@ -1,15 +1,15 @@
 /*
 ----------------------------------------------------
 AgroTorch Decision Orchestrator
-Version 4.0.0
+Version 5.0.0
 ----------------------------------------------------
 */
 
 import { buildDecisionCenter } from "../command/decisionEngine.js";
-
 import { buildMission } from "../mission/missionEngine.js";
-
 import { buildFarmContext } from "../context/farmContext.js";
+import { calculateExecution } from "../execution/executionEngine.js";
+import { buildAICoach } from "../coach/aiCoach.js";
 
 export function orchestrateFarmDecision(farm) {
 
@@ -33,6 +33,12 @@ export function orchestrateFarmDecision(farm) {
 
     context.alerts =
         decision.alerts;
+
+    context.execution =
+        calculateExecution(farm);
+
+    context.coach =
+        buildAICoach(context);
 
     return context;
 
