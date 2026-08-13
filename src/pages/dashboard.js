@@ -1,7 +1,7 @@
 /*
 ----------------------------------------------------
-AgroTorch Command Centre
-Dashboard v3.0
+AgroTorch Executive Dashboard
+Sprint 20 — Decision-First Experience
 ----------------------------------------------------
 */
 
@@ -12,52 +12,193 @@ export function dashboardPage() {
 
     const summary = getDashboardSummary();
 
+    const hasFinancialData =
+        Number(summary.totalRevenue || 0) > 0 ||
+        Number(summary.totalExpenses || 0) > 0;
+
+    const financialStatus =
+        !hasFinancialData
+            ? "NO DATA"
+            : Number(summary.netProfit || 0) > 0
+                ? "PROFIT"
+                : Number(summary.netProfit || 0) < 0
+                    ? "LOSS"
+                    : "BREAK EVEN";
+
+    const risk =
+        summary.overallRisk || "LOW";
+
+    const mission =
+        summary.mission ||
+        "Monitor Farm Conditions";
+
+    const priority =
+        summary.priority ||
+        "Review today's farm conditions";
+
+    const execution =
+        summary.execution ?? 0;
+
     return `
 
     <section class="dashboard">
 
-        <h2>🌞 Good Morning</h2>
+        <div class="hero-card">
 
-        <p>Welcome back to AgroTorch AgriOS.</p>
+            <p>🌾 AgroTorch AgriOS</p>
+
+            <h2>
+                ${summary.activeFarm || "No Farm Selected"}
+            </h2>
+
+            <p>
+                Intelligent farm decisions for today.
+            </p>
+
+        </div>
 
         ${AgroCard(`
-            <h3>🌾 Total Farms</h3>
-            <h1>${summary.totalFarms}</h1>
+
+            <h3>🚨 Today's Decision</h3>
+
+            <h2>
+                ${priority}
+            </h2>
+
+            <p>
+                ${summary.priorityReason ||
+                "AgroTorch has identified the highest-priority action for this farm."}
+            </p>
+
+            <p>
+                <strong>Risk:</strong>
+                ${risk}
+            </p>
+
+            <p>
+                <strong>💰 Estimated value at risk:</strong>
+                ₦${Number(
+                    summary.profitProtected || 0
+                ).toLocaleString()}
+            </p>
+
         `)}
 
         ${AgroCard(`
-            <h3>📋 Activities</h3>
-            <h1>${summary.totalActivities}</h1>
+
+            <h3>🎯 Today's Mission</h3>
+
+            <h2>
+                ${mission}
+            </h2>
+
+            <p>
+                ${summary.missionReason ||
+                "Complete the highest-value farm action to improve decision accuracy and reduce management risk."}
+            </p>
+
         `)}
 
         ${AgroCard(`
-            <h3>💵 Revenue</h3>
-            <h2>₦${summary.totalRevenue.toLocaleString()}</h2>
+
+            <h3>📋 Today's Action</h3>
+
+            <h2>
+                ${priority}
+            </h2>
+
+            <button
+                class="action-btn"
+                id="dashboardTaskBtn"
+            >
+                ▶ START TODAY'S TASK
+            </button>
+
+        `)}
+
+        <div class="stats-grid">
+
+            <div class="stat-card">
+
+                <div class="stat-icon">🟢</div>
+
+                <h3>
+                    ${summary.farmHealth ?? "--"}%
+                </h3>
+
+                <p>Farm Health</p>
+
+            </div>
+
+            <div class="stat-card">
+
+                <div class="stat-icon">🐛</div>
+
+                <h3>
+                    ${summary.pestRisk || "--"}
+                </h3>
+
+                <p>Pest Risk</p>
+
+            </div>
+
+            <div class="stat-card">
+
+                <div class="stat-icon">🦠</div>
+
+                <h3>
+                    ${summary.diseaseRisk || "--"}
+                </h3>
+
+                <p>Disease Risk</p>
+
+            </div>
+
+            <div class="stat-card">
+
+                <div class="stat-icon">💰</div>
+
+                <h3>
+                    ${financialStatus}
+                </h3>
+
+                <p>Financial Status</p>
+
+            </div>
+
+        </div>
+
+        ${AgroCard(`
+
+            <h3>🤖 AgroTorch Coach</h3>
+
+            <p>
+                <strong>
+                    ${summary.coachTitle ||
+                    "Action Required"}
+                </strong>
+            </p>
+
+            <p>
+                ${summary.coachMessage ||
+                "Complete today's highest-priority task to improve farm execution."}
+            </p>
+
         `)}
 
         ${AgroCard(`
-            <h3>💰 Expenses</h3>
-            <h2>₦${summary.totalExpenses.toLocaleString()}</h2>
-        `)}
 
-        ${AgroCard(`
-            <h3>📈 Net Profit</h3>
-            <h2>₦${summary.netProfit.toLocaleString()}</h2>
-        `)}
+            <h3>📊 Today's Execution</h3>
 
-        ${AgroCard(`
-            <h3>🌾 Harvest</h3>
-            <h2>${summary.totalHarvest.toLocaleString()}</h2>
-        `)}
+            <h1>
+                ${execution}%
+            </h1>
 
-        ${AgroCard(`
-            <h3>📊 Profit Margin</h3>
-            <h2>${summary.profitMargin.toFixed(1)}%</h2>
-        `)}
+            <p>
+                Complete today's recommended actions
+                to improve your execution score.
+            </p>
 
-        ${AgroCard(`
-            <h3>⏳ Outstanding Payments</h3>
-            <h2>₦${summary.outstandingPayments.toLocaleString()}</h2>
         `)}
 
     </section>

@@ -1,7 +1,7 @@
 /*
 ----------------------------------------------------
 AgroTorch CDRE Decision Card
-Version 3.0.0
+Version 4.0.0
 ----------------------------------------------------
 */
 
@@ -13,6 +13,9 @@ export function decisionCard(context) {
     const coach =
         context.coach;
 
+    const workPlan =
+        context.workPlan || [];
+
     return `
 
     <div class="agro-card">
@@ -23,7 +26,7 @@ export function decisionCard(context) {
 
             <strong>Overall Risk:</strong>
 
-            ${context.disease.risk}
+            ${context.risk}
 
         </p>
 
@@ -85,7 +88,40 @@ export function decisionCard(context) {
 
         <hr>
 
-        <h3>🤖 AI Coach</h3>
+        <h3>📋 Today's Farm Task</h3>
+
+${workPlan.map((task, index) => `
+
+    <div
+        class="task-card"
+        data-task="${index}"
+        style="
+            margin-bottom:12px;
+            padding:12px;
+            border:1px solid #ddd;
+            border-radius:8px;
+            cursor:pointer;
+        ">
+
+        <p>
+
+            ▶ <strong>${task.title}</strong>
+
+        </p>
+
+        <small>
+
+            ${task.reason}
+
+        </small>
+
+    </div>
+
+`).join("")}
+
+        <hr>
+
+        <h3>🤖 Coach</h3>
 
         <p>
 

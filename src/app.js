@@ -82,6 +82,10 @@ import {
 
 import { authListener } from "./modules/auth/firebase/firebaseAuth.service.js";
 
+import {
+    registerNavigator
+} from "./services/navigation.js";
+
 export function startApp() {
 
     document.querySelector("#app").innerHTML = splashPage();
@@ -138,35 +142,23 @@ function loadAppWorkspace() {
 
 <button id="farmBtn">🌾</button>
 
-<button id="addFarmBtn">➕</button>
+<button id="tasksBtn">📋</button>
 
-<button id="addActivityBtn">📝</button>
-
-<button id="activityBtn">📋</button>
-
-<button id="expenseBtn">💰</button>
-
-<button id="expenseHistoryBtn">📊</button>
-
-<button id="harvestBtn">🌾</button>
-
-<button id="harvestHistoryBtn">📦</button>
-
-<button id="saleBtn">💵</button>
-
-<button id="salesHistoryBtn">📈</button>
-
-<button id="profitLensBtn">📊</button>
+<button id="reportsBtn">📊</button>
 
 <button id="settingsBtn">⚙️</button>
 
 </nav>
-
 </div>
 
 `;
-
     const page = document.getElementById("page");
+
+registerNavigator((html) => {
+
+    page.innerHTML = html;
+
+});
 
     const showHome = () => {
 
@@ -264,6 +256,19 @@ function loadAppWorkspace() {
 
     };
 
+
+const showTasks = () => {
+
+    page.innerHTML = dashboardPage();
+
+};
+
+const showReports = () => {
+
+    page.innerHTML = profitLensPage();
+
+};
+
     const showSettings = () => {
 
         page.innerHTML = settingsPage();
@@ -288,43 +293,18 @@ function loadAppWorkspace() {
 
     window.addEventListener("farm-selected", showFarmWorkspace);
 
-    document.getElementById("homeBtn")
-        .addEventListener("click", showHome);
+document.getElementById("homeBtn")
+    .addEventListener("click", showHome);
 
-    document.getElementById("farmBtn")
-        .addEventListener("click", showMyFarm);
+document.getElementById("farmBtn")
+    .addEventListener("click", showMyFarm);
 
-    document.getElementById("addFarmBtn")
-        .addEventListener("click", showAddFarm);
+document.getElementById("tasksBtn")
+    .addEventListener("click", showTasks);
 
-    document.getElementById("addActivityBtn")
-        .addEventListener("click", showAddActivity);
+document.getElementById("reportsBtn")
+    .addEventListener("click", showReports);
 
-    document.getElementById("activityBtn")
-        .addEventListener("click", showActivities);
-
-    document.getElementById("expenseBtn")
-        .addEventListener("click", showAddExpense);
-
-    document.getElementById("expenseHistoryBtn")
-        .addEventListener("click", showExpenseHistory);
-
-    document.getElementById("harvestBtn")
-        .addEventListener("click", showAddHarvest);
-
-    document.getElementById("harvestHistoryBtn")
-        .addEventListener("click", showHarvestHistory);
-
-    document.getElementById("saleBtn")
-        .addEventListener("click", showAddSale);
-
-    document.getElementById("salesHistoryBtn")
-        .addEventListener("click", showSalesHistory);
-
-    document.getElementById("profitLensBtn")
-        .addEventListener("click", showProfitLens);
-
-    document.getElementById("settingsBtn")
-        .addEventListener("click", showSettings);
-
+document.getElementById("settingsBtn")
+    .addEventListener("click", showSettings);
 }

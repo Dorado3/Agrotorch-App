@@ -1,75 +1,67 @@
 /*
 ----------------------------------------------------
 AgroTorch Design System
-Components v1.1
+Executive Components v2.0
 ----------------------------------------------------
 */
 
+.agro-card {
+    background: var(--surface);
+    border-radius: 20px;
+    padding: 20px;
+    margin-bottom: 16px;
+    border: 1px solid var(--border);
+    box-shadow: 0 7px 24px rgba(0,0,0,.055);
+    transition: transform .2s ease, box-shadow .2s ease;
+}
+
+.agro-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 12px 30px rgba(0,0,0,.08);
+}
+
+.agro-card h2,
+.agro-card h3 {
+    color: #102a1b;
+}
+
+.agro-card p {
+    line-height: 1.5;
+    color: #64748b;
+}
+
 /* BUTTON */
 
-.agro-btn{
-
-    width:100%;
-    padding:16px;
-
-    border:none;
-
-    border-radius:var(--radius);
-
-    background:var(--primary);
-
-    color:#fff;
-
-    font-size:16px;
-
-    font-weight:600;
-
-    cursor:pointer;
-
-    transition:all var(--speed);
-
-    box-shadow:var(--shadow);
-
+.agro-btn {
+    width: 100%;
+    padding: 15px 16px;
+    border: none;
+    border-radius: 14px;
+    background: var(--primary);
+    color: #fff;
+    font-size: 16px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all .2s ease;
+    box-shadow: 0 6px 18px rgba(15,109,54,.18);
 }
 
-.agro-btn:hover{
-
-    background:var(--primary-dark);
-
-    transform:translateY(-2px);
-
+.agro-btn:hover {
+    background: var(--primary-dark);
+    transform: translateY(-2px);
 }
 
-.agro-btn:active{
-
-    transform:scale(.98);
-
+.agro-btn:active {
+    transform: scale(.98);
 }
 
-/* CARD */
+/* STATUS */
 
-.agro-card{
-
-    background:var(--surface);
-
-    border-radius:var(--radius-large);
-
-    padding:20px;
-
-    margin-bottom:18px;
-
-    box-shadow:var(--shadow-small);
-
-    transition:all var(--speed);
-
-    border:1px solid var(--border);
-
-}
-
-.agro-card:hover{
-
-    transform:translateY(-3px);
-
-    box-shadow:var(--shadow);
-
+.status-badge {
+    display: inline-flex;
+    align-items: center;
+    padding: 6px 10px;
+    border-radius: 999px;
+    font-size: 12px;
+    font-weight: 800;
 }

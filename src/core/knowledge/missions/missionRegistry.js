@@ -1,27 +1,32 @@
 /*
 ----------------------------------------------------
 AgroTorch Mission Registry
-Version 1.0.0
+Version 2.0.0
 ----------------------------------------------------
 */
 
 import { getTomatoMission } from "./tomatoMission.js";
+
+const missionRegistry = {
+
+    tomato: getTomatoMission
+
+};
 
 export function getCropMission(farm, week) {
 
     const crop =
         (farm.crop || "").toLowerCase();
 
-    switch (crop) {
+    const resolver =
+        missionRegistry[crop];
 
-        case "tomato":
+    if (!resolver) {
 
-            return getTomatoMission(farm, week);
-
-        default:
-
-            return null;
+        return null;
 
     }
+
+    return resolver(farm, week);
 
 }

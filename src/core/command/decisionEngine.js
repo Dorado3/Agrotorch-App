@@ -1,7 +1,7 @@
 /*
 ----------------------------------------------------
 AgroTorch Decision Engine
-Version 1.0.0
+Version 2.0.0
 ----------------------------------------------------
 */
 
@@ -22,43 +22,50 @@ export function buildDecisionCenter(farm) {
     let mission =
         "Continue Monitoring";
 
-    if (cdre.risk === "HIGH") {
+    let health = 95;
 
-        mission =
-            "Resolve High Risk Immediately";
+    switch (cdre.risk) {
 
-    }
+        case "HIGH":
 
-    else if (cdre.risk === "MEDIUM") {
+            mission =
+                "Resolve High Risk Immediately";
 
-        mission =
-            "Inspect Farm Today";
+            health = 55;
+
+            break;
+
+        case "MEDIUM":
+
+            mission =
+                "Inspect Farm Today";
+
+            health = 75;
+
+            break;
+
+        default:
+
+            mission =
+                "Continue Monitoring";
+
+            health = 95;
 
     }
 
     return {
 
-        health:
-
-            cdre.risk === "LOW"
-
-                ? 95
-
-                : cdre.risk === "MEDIUM"
-
-                    ? 75
-
-                    : 55,
+        health,
 
         mission,
 
         alerts:
-
             cdre.alerts,
 
         risk:
+            cdre.risk,
 
-            cdre.risk
+        dashboard
 
     };
 

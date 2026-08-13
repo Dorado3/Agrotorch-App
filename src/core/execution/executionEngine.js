@@ -1,23 +1,23 @@
 /*
 ----------------------------------------------------
 AgroTorch Execution Engine
-Version 1.0.0
+Version 3.0.0
+Decision → Task → Completion
 ----------------------------------------------------
 */
 
-import { buildDailyChecklist } from "../checklist/dailyChecklist.js";
+export function calculateExecution(context = {}) {
 
-export function calculateExecution(farm) {
-
-    const checklist =
-        buildDailyChecklist(farm);
+    const tasks =
+        context.tasks || [];
 
     const total =
-        checklist.length;
+        tasks.length;
 
     const completed =
-        checklist.filter(item =>
-            item.completed
+        tasks.filter(task =>
+            task.completed === true ||
+            task.status === "COMPLETED"
         ).length;
 
     const score =
@@ -35,7 +35,7 @@ export function calculateExecution(farm) {
 
         total,
 
-        checklist
+        checklist: tasks
 
     };
 

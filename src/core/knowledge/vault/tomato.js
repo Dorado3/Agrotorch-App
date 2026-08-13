@@ -2,7 +2,7 @@
 ----------------------------------------------------
 AgroTorch Knowledge Vault
 Tomato
-Version 1.0.0
+Version 2.0.0
 ----------------------------------------------------
 */
 
@@ -20,7 +20,18 @@ export const tomatoKnowledge = {
                 "Roots are establishing and require uniform moisture.",
 
             impact:
-                "Improve establishment and reduce transplant losses."
+                "Improve establishment and reduce transplant losses.",
+
+            risks: [
+                "Damping-off",
+                "Overwatering",
+                "Poor establishment"
+            ],
+
+            priorities: [
+                "Maintain uniform moisture",
+                "Inspect seedlings daily"
+            ]
 
         },
 
@@ -32,7 +43,19 @@ export const tomatoKnowledge = {
                 "Plants require balanced nutrition and weed control.",
 
             impact:
-                "Develop a strong canopy."
+                "Develop a strong canopy.",
+
+            risks: [
+                "Nitrogen deficiency",
+                "Weed competition",
+                "Early pest infestation"
+            ],
+
+            priorities: [
+                "Apply vegetative fertilizer",
+                "Scout for early pests",
+                "Control weeds"
+            ]
 
         },
 
@@ -44,7 +67,19 @@ export const tomatoKnowledge = {
                 "Flower abortion risk increases due to nutrient imbalance and pests.",
 
             impact:
-                "Increase fruit set."
+                "Increase fruit set.",
+
+            risks: [
+                "Flower abortion",
+                "Thrips",
+                "Calcium deficiency"
+            ],
+
+            priorities: [
+                "Apply calcium",
+                "Scout for thrips",
+                "Monitor flower retention"
+            ]
 
         },
 
@@ -56,7 +91,19 @@ export const tomatoKnowledge = {
                 "Potassium and calcium demand are highest during fruit development.",
 
             impact:
-                "Improve fruit size and quality."
+                "Improve fruit size and quality.",
+
+            risks: [
+                "Blossom end rot",
+                "Fruit cracking",
+                "Tuta absoluta"
+            ],
+
+            priorities: [
+                "Increase potassium",
+                "Maintain calcium supply",
+                "Scout for Tuta absoluta"
+            ]
 
         },
 
@@ -68,7 +115,18 @@ export const tomatoKnowledge = {
                 "Frequent harvesting improves quality and encourages continuous production.",
 
             impact:
-                "Increase marketable yield."
+                "Increase marketable yield.",
+
+            risks: [
+                "Overripe fruit",
+                "Post-harvest losses"
+            ],
+
+            priorities: [
+                "Harvest on schedule",
+                "Grade produce",
+                "Prepare for market"
+            ]
 
         }
 

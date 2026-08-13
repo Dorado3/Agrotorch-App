@@ -1,7 +1,7 @@
 /*
 ----------------------------------------------------
 AgroTorch Command Center
-Version 3.1.0
+Version 4.0.0
 ----------------------------------------------------
 */
 
@@ -29,7 +29,7 @@ export function commandCenterPage() {
 
                 <h2>🚀 Welcome to AgroTorch</h2>
 
-                <p>Create or select a farm to begin.</p>
+                <p>Create or select a farm first.</p>
 
             </div>
 
@@ -47,90 +47,122 @@ export function commandCenterPage() {
 
     return `
 
-    <section class="dashboard">
+<section class="dashboard">
 
-        <div class="hero-card">
+<div class="hero-card">
 
-            <h1>🌅 Good Morning</h1>
+<h1>🌅 Good Morning</h1>
 
-            <h2>${farm.farmName}</h2>
+<h2>${farm.farmName}</h2>
 
-            <p>${farm.crop}</p>
+<p>${farm.crop}</p>
 
-        </div>
+</div>
 
-        ${decisionCard(context)}
+<div class="agro-card">
 
-        <div class="dashboard-grid">
+<h2>🤖 Today's Highest Priority</h2>
 
-            <div class="dashboard-card">
+<h3>${context.priority.title}</h3>
 
-                <h3>🟢 Farm Health</h3>
+<p>${context.priority.reason}</p>
 
-                <h1>${context.health}%</h1>
+<hr>
 
-            </div>
+<p>
 
-            <div class="dashboard-card">
+<strong>💰 Economic Impact</strong>
 
-                <h3>⚠ Overall Risk</h3>
+</p>
 
-                <h2>${context.risk}</h2>
+<p>
 
-            </div>
+${context.impact.message}
 
-            <div class="dashboard-card">
+</p>
 
-                <h3>🦠 Disease Risk</h3>
+</div>
 
-                <h2>${context.disease.risk}</h2>
+${decisionCard(context)}
 
-            </div>
+<div class="dashboard-grid">
 
-            <div class="dashboard-card">
+<div class="dashboard-card">
 
-                <h3>🐛 Pest Risk</h3>
+<h3>🟢 Farm Health</h3>
 
-                <h2>${context.pest.risk}</h2>
+<h1>${context.health}%</h1>
 
-            </div>
+</div>
 
-            <div class="dashboard-card">
+<div class="dashboard-card">
 
-                <h3>💰 Profit Status</h3>
+<h3>⚠ Overall Risk</h3>
 
-                <h2>${context.profit.status}</h2>
+<h2>${context.risk}</h2>
 
-            </div>
+</div>
 
-            <div class="dashboard-card">
+<div class="dashboard-card">
 
-                <h3>📢 Alerts</h3>
+<h3>🦠 Disease Risk</h3>
 
-                <h2>${context.alerts.length}</h2>
+<h2>${context.disease.risk}</h2>
 
-            </div>
+</div>
 
-            <div class="dashboard-card">
+<div class="dashboard-card">
 
-                <h3>📦 Harvest</h3>
+<h3>🐛 Pest Risk</h3>
 
-                <h2>${dashboard.harvests}</h2>
+<h2>${context.pest.risk}</h2>
 
-            </div>
+</div>
 
-            <div class="dashboard-card">
+<div class="dashboard-card">
 
-                <h3>📈 Revenue</h3>
+<h3>💰 Profit Status</h3>
 
-                <h2>₦${dashboard.revenue}</h2>
+<h2>${context.profit.status}</h2>
 
-            </div>
+</div>
 
-        </div>
+<div class="dashboard-card">
 
-    </section>
+<h3>📢 Alerts</h3>
 
-    `;
+<h2>${context.alerts.length}</h2>
+
+</div>
+
+<div class="dashboard-card">
+
+<h3>📊 Execution</h3>
+
+<h2>${context.execution.score}%</h2>
+
+</div>
+
+<div class="dashboard-card">
+
+<h3>📦 Harvest</h3>
+
+<h2>${dashboard.harvests}</h2>
+
+</div>
+
+<div class="dashboard-card">
+
+<h3>📈 Revenue</h3>
+
+<h2>₦${dashboard.revenue}</h2>
+
+</div>
+
+</div>
+
+</section>
+
+`;
 
 }

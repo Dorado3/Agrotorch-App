@@ -1,7 +1,7 @@
 /*
 ----------------------------------------------------
 AgroTorch Task Card
-Version 1.0.0
+Version 2.0.0
 ----------------------------------------------------
 */
 
@@ -11,17 +11,43 @@ export function taskCard(tasks = []) {
 
     <div class="agro-card">
 
-        <h3>📋 Today's Tasks</h3>
+        <h2>📋 Today's Farm Tasks</h2>
 
-        <ul>
+        ${tasks.map(task => `
 
-            ${tasks.map(task => `
+            <div class="task-item">
 
-                <li>${task}</li>
+                <h3>
 
-            `).join("")}
+                    ${task.completed ? "✅" : "⬜"}
 
-        </ul>
+                    ${task.title}
+
+                </h3>
+
+                <p>
+
+                    ${task.reason}
+
+                </p>
+
+                <button
+
+                    class="primary-button"
+
+                    data-task="${task.id}"
+
+                >
+
+                    ${task.completed ? "Completed" : "Complete"}
+
+                </button>
+
+                <hr>
+
+            </div>
+
+        `).join("")}
 
     </div>
 

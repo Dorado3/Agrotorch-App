@@ -1,75 +1,202 @@
-.dashboard{
-    padding:20px;
+.dashboard {
+    padding: 16px;
+    max-width: 1100px;
+    margin: 0 auto;
 }
 
-.hero-card{
-    background:linear-gradient(135deg,#0f6d36,#28a745);
-    color:white;
-    padding:25px;
-    border-radius:20px;
-    margin-bottom:25px;
-    box-shadow:0 12px 30px rgba(0,0,0,.15);
+.dashboard > h2 {
+    margin: 4px 0 4px;
+    font-size: 28px;
+    font-weight: 800;
 }
 
-.hero-card h2{
-    font-size:28px;
-    margin-bottom:8px;
+.dashboard > p {
+    margin: 0 0 22px;
+    color: #64748b;
 }
 
-.hero-card p{
-    opacity:.9;
+/* EXECUTIVE HERO */
+
+.dashboard-hero {
+    background: linear-gradient(135deg, #073b22 0%, #0f6d36 55%, #1f9d55 100%);
+    color: #fff;
+    border-radius: 24px;
+    padding: 24px;
+    margin-bottom: 18px;
+    box-shadow: 0 14px 35px rgba(15, 109, 54, .22);
 }
 
-.stats-grid{
-    display:grid;
-    grid-template-columns:repeat(2,1fr);
-    gap:15px;
-    margin-bottom:25px;
+.dashboard-hero .eyebrow {
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    opacity: .75;
 }
 
-.stat-card{
-    background:white;
-    border-radius:18px;
-    padding:20px;
-    text-align:center;
-    box-shadow:0 8px 25px rgba(0,0,0,.08);
-    transition:.3s;
+.dashboard-hero h1 {
+    margin: 8px 0;
+    font-size: 30px;
+    line-height: 1.1;
 }
 
-.stat-card:hover{
-    transform:translateY(-4px);
+.dashboard-hero p {
+    margin: 0;
+    opacity: .88;
 }
 
-.stat-icon{
-    font-size:32px;
+/* INTELLIGENCE GRID */
+
+.intelligence-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
+    margin-bottom: 18px;
 }
 
-.stat-card h3{
-    margin:10px 0;
-    color:#0f6d36;
-    font-size:28px;
+.intelligence-card {
+    background: #fff;
+    border: 1px solid #e5e7eb;
+    border-radius: 18px;
+    padding: 16px;
+    box-shadow: 0 6px 20px rgba(0,0,0,.05);
 }
 
-.stat-card p{
-    color:#666;
+.intelligence-card .label {
+    color: #64748b;
+    font-size: 12px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: .5px;
 }
 
-.quick-actions{
-    display:grid;
-    gap:15px;
+.intelligence-card .value {
+    margin-top: 7px;
+    font-size: 25px;
+    font-weight: 800;
+    color: #102a1b;
 }
 
-.action-btn{
-    background:#0f6d36;
-    color:white;
-    border:none;
-    padding:16px;
-    border-radius:14px;
-    font-size:16px;
-    cursor:pointer;
-    transition:.3s;
+/* DECISION CENTER */
+
+.decision-center {
+    background: #fff;
+    border: 1px solid #e5e7eb;
+    border-radius: 22px;
+    padding: 20px;
+    margin-bottom: 18px;
+    box-shadow: 0 8px 24px rgba(0,0,0,.06);
 }
 
-.action-btn:hover{
-    background:#0c572b;
+.decision-center .section-label {
+    color: #0f6d36;
+    font-size: 12px;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: .8px;
+}
+
+.decision-center h2 {
+    margin: 7px 0;
+    font-size: 22px;
+}
+
+.decision-center p {
+    color: #64748b;
+    line-height: 1.5;
+}
+
+/* PRIORITY */
+
+.priority-card {
+    background: #fff8e6;
+    border: 1px solid #f4d58b;
+    border-radius: 18px;
+    padding: 18px;
+    margin-bottom: 18px;
+}
+
+.priority-card h3 {
+    margin: 0 0 8px;
+    color: #8a5a00;
+}
+
+.priority-card p {
+    margin: 0;
+    color: #664500;
+}
+
+/* METRICS */
+
+.stats-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
+    margin-bottom: 18px;
+}
+
+.stat-card {
+    background: #fff;
+    border: 1px solid #e5e7eb;
+    border-radius: 18px;
+    padding: 17px;
+    box-shadow: 0 6px 20px rgba(0,0,0,.05);
+}
+
+.stat-icon {
+    font-size: 25px;
+}
+
+.stat-card h3 {
+    margin: 8px 0 3px;
+    color: #0f6d36;
+    font-size: 24px;
+}
+
+.stat-card p {
+    margin: 0;
+    color: #64748b;
+    font-size: 13px;
+}
+
+/* QUICK ACTIONS */
+
+.quick-actions {
+    display: grid;
+    gap: 10px;
+}
+
+.action-btn {
+    background: #0f6d36;
+    color: #fff;
+    border: none;
+    padding: 15px 17px;
+    border-radius: 14px;
+    font-size: 15px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: .2s;
+}
+
+.action-btn:hover {
+    background: #0b572b;
+    transform: translateY(-2px);
+}
+
+/* MOBILE */
+
+@media (min-width: 700px) {
+
+    .dashboard {
+        padding: 28px;
+    }
+
+    .intelligence-grid,
+    .stats-grid {
+        grid-template-columns: repeat(4, 1fr);
+    }
+
+    .dashboard-hero h1 {
+        font-size: 36px;
+    }
 }
