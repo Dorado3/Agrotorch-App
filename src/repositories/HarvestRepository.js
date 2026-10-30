@@ -1,85 +1,20 @@
-/*
-----------------------------------------------------
-AgroTorch Repository
-Harvest Repository
-Version 3.1.0
-----------------------------------------------------
-*/
-
-import {
-
-    getHarvests,
-
-    getFarmHarvests,
-
-    saveHarvest,
-
-    deleteHarvest
-
-} from "../services/harvestStorage.js";
-
-import {
-
-    saveHarvestCloud,
-
-    getHarvestsCloud
-
-} from "../firestore/HarvestFirestore.js";
-
+import { getHarvests, getFarmHarvests, saveHarvest, deleteHarvest } from "../services/harvestStorage.js";
+import { saveHarvestCloud, getHarvestsCloud, deleteHarvestCloud } from "../firestore/HarvestFirestore.js";
 import { isToday } from "../core/date/isToday.js";
 
 export const HarvestRepository = {
-
-    all() {
-
-        return getHarvests();
-
-    },
-
-    farmHarvests(farmId) {
-
-        return getFarmHarvests(farmId);
-
-    },
-
-    todayHarvests(farmId) {
-
-        return getFarmHarvests(farmId)
-
-            .filter(harvest =>
-
-                isToday(
-
-                    harvest.createdAt ||
-
-                    harvest.date ||
-
-                    harvest.timestamp
-
-                )
-
-            );
-
-    },
-
-    async allCloud() {
-
-        return await getHarvestsCloud();
-
-    },
-
-    async create(harvest) {
-
-        saveHarvest(harvest);
-
-        return await saveHarvestCloud(harvest);
-
-    },
-
-    delete(id) {
-
-        return deleteHarvest(id);
-
-    }
-
+  all() { return getHarvests(); },
+  farmHarvests(farmId) { return getFarmHarvests(farmId); },
+  todayHarvests(farmId) {
+    return getFarmHarvests(farmId).filter(item => isToday(item.createdAt || item.date || item.timestamp));
+  },
+  async allCloud() { return getHarvestsCloud(); },
+  async create(harvest) {
+    saveHarvest(harvest);
+    return saveHarvestCloud(harvest);
+  },
+  async delete(id) {
+    deleteHarvest(id);
+    return deleteHarvestCloud(id);
+  }
 };
