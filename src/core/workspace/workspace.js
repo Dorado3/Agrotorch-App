@@ -8,6 +8,7 @@ import { ActivityRepository } from "../../repositories/ActivityRepository.js";
 import { ExpenseRepository } from "../../repositories/ExpenseRepository.js";
 import { HarvestRepository } from "../../repositories/HarvestRepository.js";
 import { SalesRepository } from "../../repositories/SalesRepository.js";
+import { TaskRepository } from "../../repositories/TaskRepository.js";
 import { mergeCloudActivities } from "../../services/activityStorage.js";
 import { mergeCloudExpenses } from "../../services/expenseStorage.js";
 import { mergeCloudHarvests } from "../../services/harvestStorage.js";
@@ -20,7 +21,8 @@ async function hydrateOperationalRecords() {
     [ActivityRepository, mergeCloudActivities],
     [ExpenseRepository, mergeCloudExpenses],
     [HarvestRepository, mergeCloudHarvests],
-    [SalesRepository, mergeCloudSales]
+    [SalesRepository, mergeCloudSales],
+    [TaskRepository, records => TaskRepository.mergeCloud(records)]
   ];
 
   await Promise.allSettled(loaders.map(([repo]) => repo.syncPendingCloud()));
