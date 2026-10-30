@@ -1,60 +1,37 @@
 /*
-----------------------------------------------------
-AgroTorch Health Engine
-Version 2.0.0
-----------------------------------------------------
-*/
+ * Farm health is a composite indicator, not a measured biological fact.
+ * Return null until there are enough recorded signals to support a score.
+ */
+export function calculateHealth(context = {}) {
+  const signals = [];
+  let deductions = 0;
 
-export function calculateHealth(context) {
+  const executionScore = Number(context.execution?.score);
+  if ((context.tasks || []).length > 0 && Number.isFinite(executionScore)) {
+    signals.push("task_execution");
+    deductions += (100 - Math.max(0, Math.min(100, executionScore))) * 0.3;
+  }
 
-    let score = 100;
+  const diseaseRisk = context.disease?.risk;
+  if (["LOW", "MEDIUM", "HIGH"].includes(diseaseRisk)) {
+    signals.push("disease_weather");
+    if (diseaseRisk === "HIGH") deductions += 20;
+    else if (diseaseRisk === "MEDIUM") deductions += 10;
+  }
 
-    /*
-    ----------------------------------------
-    Execution
-    ----------------------------------------
-    */
+  const pestRisk = context.pest?.risk;
+  if (["LOW", "MEDIUM", "HIGH"].includes(pestRisk)) {
+    signals.push("pest_weather");
+    if (pestRisk === "HIGH") deductions += 15;
+    else if (pestRisk === "MEDIUM") deductions += 8;
+  }
 
-    score -= (100 - context.execution.score) * 0.3;
+  if (context.dashboard?.financialDataAvailable && context.profit?.status) {
+    signals.push("financial_records");
+    if (context.profit.status === "LOSS") deductions += 15;
+    else if (context.profit.status === "LOW PROFIT") deductions += 8;
+  }
 
-    /*
-    ----------------------------------------
-    Disease
-    ----------------------------------------
-    */
-
-    if (context.disease.risk === "HIGH")
-        score -= 20;
-
-    else if (context.disease.risk === "MEDIUM")
-        score -= 10;
-
-    /*
-    ----------------------------------------
-    Pest
-    ----------------------------------------
-    */
-
-    if (context.pest.risk === "HIGH")
-        score -= 15;
-
-    else if (context.pest.risk === "MEDIUM")
-        score -= 8;
-
-    /*
-    ----------------------------------------
-    Profit
-    ----------------------------------------
-    */
-
-    if (context.profit.status === "LOSS")
-        score -= 15;
-
-    else if (context.profit.status === "LOW PROFIT")
-        score -= 8;
-
-    score = Math.max(0, Math.min(100, Math.round(score)));
-
-    return score;
-
+  if (signals.length < 2) return null;
+  return Math.max(0, Math.min(100, Math.round(100 - deductions)));
 }

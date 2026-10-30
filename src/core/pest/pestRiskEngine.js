@@ -4,10 +4,11 @@
  */
 export function evaluatePestRisk(context = {}) {
   const weather = context.weather || {};
-  const temperature = Number(weather.temperature);
-  const humidity = Number(weather.humidity);
-  const hasTemperature = Number.isFinite(temperature);
-  const hasHumidity = Number.isFinite(humidity);
+  const hasValue = value => value !== null && value !== undefined && value !== "" && Number.isFinite(Number(value));
+  const hasTemperature = hasValue(weather.temperature);
+  const hasHumidity = hasValue(weather.humidity);
+  const temperature = hasTemperature ? Number(weather.temperature) : null;
+  const humidity = hasHumidity ? Number(weather.humidity) : null;
 
   if (!hasTemperature && !hasHumidity) {
     return {
@@ -16,7 +17,6 @@ export function evaluatePestRisk(context = {}) {
       basis: "No weather data"
     };
   }
-
   if ((hasTemperature && temperature >= 32 && hasHumidity && humidity >= 70) ||
       (hasTemperature && temperature >= 35)) {
     return {
@@ -25,7 +25,6 @@ export function evaluatePestRisk(context = {}) {
       basis: "Verified weather inputs"
     };
   }
-
   if ((hasTemperature && temperature >= 29) || (hasHumidity && humidity >= 65)) {
     return {
       risk: "MEDIUM",
@@ -33,7 +32,6 @@ export function evaluatePestRisk(context = {}) {
       basis: "Verified weather inputs"
     };
   }
-
   return {
     risk: "LOW",
     reason: "Available weather readings indicate lower general pest pressure; continue routine scouting.",

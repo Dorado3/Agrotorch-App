@@ -5,7 +5,8 @@ import { TaskRepository } from "../../repositories/TaskRepository.js";
 
 export function syncDailyTasks(tasks = [], farmId) {
   if (!farmId) return tasks;
-  const today = new Date().toLocaleDateString("en-CA");
+  const now = new Date();
+  const today = [now.getFullYear(), String(now.getMonth() + 1).padStart(2, "0"), String(now.getDate()).padStart(2, "0")].join("-");
   const existingTasks = TaskRepository.farmTasks(farmId);
 
   return tasks.map(task => {

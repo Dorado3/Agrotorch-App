@@ -4,10 +4,11 @@
  */
 export function evaluateDiseaseRisk(context = {}) {
   const weather = context.weather || {};
-  const humidity = Number(weather.humidity);
-  const rain = Number(weather.rainfallProbability);
-  const hasHumidity = Number.isFinite(humidity);
-  const hasRain = Number.isFinite(rain);
+  const hasValue = value => value !== null && value !== undefined && value !== "" && Number.isFinite(Number(value));
+  const hasHumidity = hasValue(weather.humidity);
+  const hasRain = hasValue(weather.rainfallProbability);
+  const humidity = hasHumidity ? Number(weather.humidity) : null;
+  const rain = hasRain ? Number(weather.rainfallProbability) : null;
 
   if (!hasHumidity && !hasRain) {
     return {
@@ -16,7 +17,6 @@ export function evaluateDiseaseRisk(context = {}) {
       basis: "No weather data"
     };
   }
-
   if ((hasHumidity && humidity >= 85) || (hasRain && rain >= 70)) {
     return {
       risk: "HIGH",
@@ -24,7 +24,6 @@ export function evaluateDiseaseRisk(context = {}) {
       basis: "Verified weather inputs"
     };
   }
-
   if ((hasHumidity && humidity >= 70) || (hasRain && rain >= 40)) {
     return {
       risk: "MEDIUM",
@@ -32,7 +31,6 @@ export function evaluateDiseaseRisk(context = {}) {
       basis: "Verified weather inputs"
     };
   }
-
   return {
     risk: "LOW",
     reason: "Available weather readings indicate lower environmental disease pressure; continue routine scouting.",
