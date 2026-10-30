@@ -17,13 +17,14 @@ const workspace = { user: null, farms: [], activeFarm: null };
 
 async function hydrateOperationalRecords() {
   const loaders = [
-    [ActivityRepository.allCloud, mergeCloudActivities],
-    [ExpenseRepository.allCloud, mergeCloudExpenses],
-    [HarvestRepository.allCloud, mergeCloudHarvests],
-    [SalesRepository.allCloud, mergeCloudSales]
+    [ActivityRepository, mergeCloudActivities],
+    [ExpenseRepository, mergeCloudExpenses],
+    [HarvestRepository, mergeCloudHarvests],
+    [SalesRepository, mergeCloudSales]
   ];
 
-  const results = await Promise.allSettled(loaders.map(([load]) => load()));
+  await Promise.allSettled(loaders.map(([repo]) => repo.syncPendingCloud()));
+  const results = await Promise.allSettled(loaders.map(([repo]) => repo.allCloud()));
   results.forEach((result, index) => {
     if (result.status === "fulfilled") loaders[index][1](result.value);
     else console.warn("Could not sync one operational record collection:", result.reason);
@@ -43,16 +44,9 @@ export async function loadWorkspace() {
   workspace.farms = await getUserFarms(user.uid);
   workspace.farms.forEach(farm => saveFarm({ ...farm, id: farm.id, ownerId: user.uid }));
   workspace.activeFarm = workspace.farms.length ? workspace.farms[0] : null;
-
-  // Keep local-first screens populated with this user's cloud records on every login.
   await hydrateOperationalRecords();
   return workspace;
 }
 
-export function getWorkspace() {
-  return workspace;
-}
-
-export function setActiveFarm(farm) {
-  workspace.activeFarm = farm;
-}
+export function getWorkspace() { return workspace; }
+export function setActiveFarm(farm) { workspace.activeFarm = farm; }

@@ -1,27 +1,18 @@
 import { collection, addDoc, getDocs, query, where, deleteDoc } from "firebase/firestore";
 import { db, auth } from "../core/config/firebase.js";
-
-const expensesCollection = collection(db, "expenses");
-function currentUid() {
-  const uid = auth.currentUser?.uid;
-  if (!uid) throw new Error("Sign in to access farm expenses.");
-  return uid;
+const records = collection(db, "expenses");
+const uid = () => {
+  if (!auth.currentUser?.uid) throw new Error("Sign in to access farm expenses.");
+  return auth.currentUser.uid;
+};
+export async function saveExpenseCloud(record) {
+  return addDoc(records, { ...record, userId: uid(), syncStatus: "SYNCED" });
 }
-
-export async function saveExpenseCloud(expense) {
-  return addDoc(expensesCollection, { ...expense, userId: currentUid() });
-}
-
 export async function getExpensesCloud() {
-  const snapshot = await getDocs(query(expensesCollection, where("userId", "==", currentUid())));
-  return snapshot.docs.map(doc => {
-    const data = doc.data();
-    return { ...data, id: data.id || doc.id, cloudId: doc.id };
-  });
+  const snapshot = await getDocs(query(records, where("userId", "==", uid())));
+  return snapshot.docs.map(doc => ({ ...doc.data(), id: doc.data().id || doc.id, cloudId: doc.id, syncStatus: "SYNCED" }));
 }
-
 export async function deleteExpenseCloud(id) {
-  const q = query(expensesCollection, where("userId", "==", currentUid()), where("id", "==", id));
-  const snapshot = await getDocs(q);
-  await Promise.all(snapshot.docs.map(item => deleteDoc(item.ref)));
+  const snapshot = await getDocs(query(records, where("userId", "==", uid()), where("id", "==", id)));
+  await Promise.all(snapshot.docs.map(doc => deleteDoc(doc.ref)));
 }
