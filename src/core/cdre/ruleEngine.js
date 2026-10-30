@@ -1,72 +1,46 @@
 /*
-----------------------------------------------------
-AgroTorch CDRE Rule Engine
-Version 1.0.0
-----------------------------------------------------
-*/
+ * AgroTorch CDRE rules.
+ * UNKNOWN means there is not enough verified evidence to grade risk.
+ */
+export function evaluateFarmRisk(farm, dashboard = {}, context = {}) {
+  if (!farm) {
+    return { risk: "UNKNOWN", alerts: [{ level: "INFO", code: "NO_FARM", message: "Register or select a farm to generate decisions." }], evidence: [] };
+  }
 
-export function evaluateFarmRisk(farm, dashboard) {
-
-    const alerts = [];
-
-    if (!farm) {
-
-        return {
-
-            risk: "UNKNOWN",
-
-            alerts
-
-        };
-
+  const alerts = [];
+  const evidence = [];
+  const addRiskAlert = (key, label, result) => {
+    if (!result || result.risk === "UNKNOWN") return;
+    evidence.push({ source: key, risk: result.risk, reason: result.reason });
+    if (result.risk === "HIGH" || result.risk === "MEDIUM") {
+      alerts.push({ level: result.risk, code: key.toUpperCase() + "_PRESSURE", message: label + ": " + result.reason });
     }
+  };
 
-    if (dashboard.activities === 0) {
+  if (!context.plantingDate) {
+    alerts.push({ level: "INFO", code: "MISSING_PLANTING_DATE", message: "Add the planting or transplant date to calculate crop age and stage." });
+  } else {
+    evidence.push({ source: "crop_calendar", week: context.week, stage: context.stage });
+  }
 
-        alerts.push({
-            level: "HIGH",
-            message: "No farm activities have been recorded."
-        });
+  addRiskAlert("disease", "Disease pressure", context.disease);
+  addRiskAlert("pest", "Pest pressure", context.pest);
 
-    }
+  if (Number(dashboard.harvests || 0) > 0 && Number(dashboard.sales || 0) === 0) {
+    alerts.push({ level: "MEDIUM", code: "UNSOLD_HARVEST", message: "Harvest has been recorded but no sale is recorded. Confirm stock, storage condition and sales status." });
+    evidence.push({ source: "harvest_sales_records" });
+  }
 
-    if (dashboard.harvests > 0 &&
-        dashboard.sales === 0) {
+  if (Number(dashboard.revenue || 0) > 0 && Number(dashboard.expenses || 0) > Number(dashboard.revenue || 0)) {
+    alerts.push({ level: "MEDIUM", code: "CASHFLOW_PRESSURE", message: "Recorded expenses exceed recorded sales revenue. Review the period and confirm that all sales and costs are entered." });
+    evidence.push({ source: "financial_records" });
+  }
 
-        alerts.push({
-            level: "MEDIUM",
-            message: "Harvest recorded but no sales have been made."
-        });
+  const knownRisks = evidence.filter(item => item.risk);
+  let risk = "UNKNOWN";
+  if (knownRisks.some(item => item.risk === "HIGH")) risk = "HIGH";
+  else if (knownRisks.some(item => item.risk === "MEDIUM") || alerts.some(item => item.level === "MEDIUM")) risk = "MEDIUM";
+  else if (knownRisks.length > 0 && knownRisks.every(item => item.risk === "LOW") && !alerts.some(item => item.level === "MEDIUM")) risk = "LOW";
 
-    }
-
-    if (dashboard.expenses > dashboard.revenue) {
-
-        alerts.push({
-            level: "HIGH",
-            message: "Expenses currently exceed revenue."
-        });
-
-    }
-
-    let risk = "LOW";
-
-    if (alerts.some(a => a.level === "HIGH")) {
-
-        risk = "HIGH";
-
-    } else if (alerts.length > 0) {
-
-        risk = "MEDIUM";
-
-    }
-
-    return {
-
-        risk,
-
-        alerts
-
-    };
-
+  return { risk, alerts, evidence };
 }

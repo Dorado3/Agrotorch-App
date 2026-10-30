@@ -1,15 +1,6 @@
+import { auth } from "../core/config/firebase.js";
 import { getCurrentUser } from "./authStorage.js";
 
 export function getCurrentUserId() {
-
-    const user = getCurrentUser();
-
-    if (!user) {
-
-        return null;
-
-    }
-
-    return user.name.toLowerCase().trim();
-
+  return auth.currentUser?.uid || getCurrentUser()?.uid || getCurrentUser()?.id || null;
 }
