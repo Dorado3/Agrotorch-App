@@ -9,7 +9,7 @@ import { dashboardPage } from "./pages/dashboard.js";
 import { myFarmPage, initMyFarmPage } from "./pages/myfarm.js";
 import { commandCenterPage } from "./pages/command/index.js";
 import { addFarmPage, initAddFarmPage } from "./pages/addFarm.js";
-import { cdrePage } from "./pages/cdre.js";
+import { cdrePage, initCDREPage } from "./pages/cdre.js";
 import { addActivityPage, initAddActivityPage } from "./pages/addActivity.js";
 import { activityTimelinePage } from "./pages/activityTimeline.js";
 import { addExpensePage, initAddExpensePage } from "./pages/addExpense.js";
@@ -28,6 +28,11 @@ export function startApp() {
   const root = document.querySelector("#app");
   if (!root) return;
   root.innerHTML = splashPage();
+
+  // Retry pending cloud writes when the device regains connectivity.
+  window.addEventListener("online", () => {
+    initializeWorkspace().catch(error => console.warn("Background farm sync will retry later:", error));
+  });
 
   startSplash(() => {
     authListener(async user => {
@@ -88,25 +93,22 @@ function loadAppWorkspace() {
   };
   const showCDRE = () => {
     page.innerHTML = cdrePage();
+    initCDREPage();
     document.getElementById("cdreAddFarmBtn")?.addEventListener("click", showAddFarm);
   };
   const showActivities = () => { page.innerHTML = activityTimelinePage(); };
   const showTasks = () => {
-    page.innerHTML = `
-      <section class="dashboard">
-        <h2>📋 Farm Records</h2>
-        <div class="agro-card">
-          <p>Keep your farm history accurate by recording field activities, expenses, harvests and sales.</p>
-          <button class="action-btn" id="recordActivityBtn">＋ Record activity</button>
-          <button class="action-btn" id="activityHistoryBtn">View activity history</button>
-          <button class="action-btn" id="recordExpenseBtn">＋ Record expense</button>
-          <button class="action-btn" id="expenseHistoryBtn">View expenses</button>
-          <button class="action-btn" id="recordHarvestBtn">＋ Record harvest</button>
-          <button class="action-btn" id="harvestHistoryBtn">View harvests</button>
-          <button class="action-btn" id="recordSaleBtn">＋ Record sale</button>
-          <button class="action-btn" id="salesHistoryBtn">View sales</button>
-        </div>
-      </section>`;
+    page.innerHTML = `<section class="dashboard"><h2>📋 Farm Records</h2><div class="agro-card">
+      <p>Keep your farm history accurate by recording field activities, expenses, harvests and sales.</p>
+      <button class="action-btn" id="recordActivityBtn">＋ Record activity</button>
+      <button class="action-btn" id="activityHistoryBtn">View activity history</button>
+      <button class="action-btn" id="recordExpenseBtn">＋ Record expense</button>
+      <button class="action-btn" id="expenseHistoryBtn">View expenses</button>
+      <button class="action-btn" id="recordHarvestBtn">＋ Record harvest</button>
+      <button class="action-btn" id="harvestHistoryBtn">View harvests</button>
+      <button class="action-btn" id="recordSaleBtn">＋ Record sale</button>
+      <button class="action-btn" id="salesHistoryBtn">View sales</button>
+    </div></section>`;
     document.getElementById("recordActivityBtn").onclick = () => { page.innerHTML = addActivityPage(); initAddActivityPage(); };
     document.getElementById("activityHistoryBtn").onclick = showActivities;
     document.getElementById("recordExpenseBtn").onclick = () => { page.innerHTML = addExpensePage(); initAddExpensePage(); };
