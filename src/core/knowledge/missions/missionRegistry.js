@@ -1,32 +1,16 @@
 /*
-----------------------------------------------------
-AgroTorch Mission Registry
-Version 2.0.0
-----------------------------------------------------
-*/
-
+ * AgroTorch Crop Mission Registry
+ */
 import { getTomatoMission } from "./tomatoMission.js";
+import { getPepperMission } from "./pepperMission.js";
 
 const missionRegistry = {
-
-    tomato: getTomatoMission
-
+  tomato: getTomatoMission,
+  pepper: getPepperMission
 };
 
 export function getCropMission(farm, week) {
-
-    const crop =
-        (farm.crop || "").toLowerCase();
-
-    const resolver =
-        missionRegistry[crop];
-
-    if (!resolver) {
-
-        return null;
-
-    }
-
-    return resolver(farm, week);
-
+  const crop = String(farm?.cropId || farm?.crop || "").trim().toLowerCase();
+  const resolver = missionRegistry[crop];
+  return resolver ? resolver(farm, week) : null;
 }
