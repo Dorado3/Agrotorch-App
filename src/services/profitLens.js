@@ -2,55 +2,29 @@ import { getExpenses } from "./expenseStorage.js";
 import { getHarvests } from "./harvestStorage.js";
 import { getSales } from "./salesStorage.js";
 
-export function getProfitSummary() {
+export function getProfitSummary(farmId = null) {
+  const belongsToFarm = record => farmId ? record.farmId === farmId : true;
+  const expenses = getExpenses().filter(belongsToFarm);
+  const harvests = getHarvests().filter(belongsToFarm);
+  const sales = getSales().filter(belongsToFarm);
 
-    const expenses = getExpenses();
-    const harvests = getHarvests();
-    const sales = getSales();
+  const totalExpenses = expenses.reduce((sum, item) => sum + Number(item.amount || 0), 0);
+  const totalRevenue = sales.reduce((sum, item) => sum + Number(item.total || 0), 0);
+  const totalHarvest = harvests.reduce((sum, item) => sum + Number(item.quantity || 0), 0);
+  const outstandingPayments = sales
+    .filter(item => item.paymentStatus === "Pending")
+    .reduce((sum, item) => sum + Number(item.total || 0), 0);
+  const netProfit = totalRevenue - totalExpenses;
+  const hasFinancialData = expenses.length > 0 || sales.length > 0;
 
-    const totalExpenses = expenses.reduce(
-        (sum, expense) => sum + Number(expense.amount),
-        0
-    );
-
-    const totalRevenue = sales.reduce(
-        (sum, sale) => sum + Number(sale.total),
-        0
-    );
-
-    const totalHarvest = harvests.reduce(
-        (sum, harvest) => sum + Number(harvest.quantity),
-        0
-    );
-
-    const outstandingPayments = sales
-        .filter(sale => sale.paymentStatus === "Pending")
-        .reduce(
-            (sum, sale) => sum + Number(sale.total),
-            0
-        );
-
-    const netProfit = totalRevenue - totalExpenses;
-
-    const profitMargin =
-        totalRevenue === 0
-            ? 0
-            : ((netProfit / totalRevenue) * 100);
-
-    return {
-
-        totalRevenue,
-
-        totalExpenses,
-
-        totalHarvest,
-
-        outstandingPayments,
-
-        netProfit,
-
-        profitMargin
-
-    };
-
+  return {
+    totalRevenue,
+    totalExpenses,
+    totalHarvest,
+    outstandingPayments,
+    netProfit,
+    profitMargin: totalRevenue > 0 ? (netProfit / totalRevenue) * 100 : 0,
+    hasFinancialData,
+    status: !hasFinancialData ? "NO DATA" : netProfit > 0 ? "PROFIT" : netProfit < 0 ? "LOSS" : "BREAK EVEN"
+  };
 }
