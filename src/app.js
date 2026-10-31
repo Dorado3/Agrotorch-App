@@ -20,6 +20,7 @@ import { harvestTimelinePage, initHarvestTimeline } from "./pages/harvestTimelin
 import { addSalePage, initAddSalePage } from "./pages/addSale.js";
 import { salesTimelinePage, initSalesTimeline } from "./pages/salesTimeline.js";
 import { profitLensPage } from "./pages/profitLens.js";
+import { impactPage, initImpactPage } from "./pages/impact.js";
 import { loginPage, initLoginPage } from "./pages/login.js";
 import { settingsPage, initSettingsPage } from "./pages/settings.js";
 import { authListener } from "./modules/auth/firebase/firebaseAuth.service.js";
@@ -68,6 +69,7 @@ function loadAppWorkspace() {
         <button id="cdreBtn" aria-label="Crop decisions">🧠</button>
         <button id="tasksBtn" aria-label="Farm activities">📋</button>
         <button id="reportsBtn" aria-label="Reports">📊</button>
+        <button id="impactBtn" aria-label="Impact and funding">🌍</button>
         <button id="settingsBtn" aria-label="Settings">⚙️</button>
       </nav>
     </div>`;
@@ -132,6 +134,11 @@ function loadAppWorkspace() {
     document.getElementById("salesHistoryBtn").onclick = () => { page.innerHTML = salesTimelinePage(); initSalesTimeline(); };
   };
   const showReports = () => { currentView = "reports"; page.innerHTML = profitLensPage(); };
+  const showImpact = () => {
+    currentView = "impact";
+    page.innerHTML = impactPage();
+    initImpactPage();
+  };
   const showSettings = () => {
     currentView = "settings";
     page.innerHTML = settingsPage();
@@ -154,11 +161,13 @@ function loadAppWorkspace() {
 
   window.addEventListener("farm-selected", showFarmWorkspace);
   window.addEventListener("navigate-add-farm", showAddFarm);
+  window.addEventListener("navigate-farms", showMyFarm);
   document.getElementById("homeBtn").addEventListener("click", showHome);
   document.getElementById("farmBtn").addEventListener("click", showMyFarm);
   document.getElementById("addFarmBtn").addEventListener("click", showAddFarm);
   document.getElementById("cdreBtn").addEventListener("click", showCDRE);
   document.getElementById("tasksBtn").addEventListener("click", showTasks);
   document.getElementById("reportsBtn").addEventListener("click", showReports);
+  document.getElementById("impactBtn").addEventListener("click", showImpact);
   document.getElementById("settingsBtn").addEventListener("click", showSettings);
 }
