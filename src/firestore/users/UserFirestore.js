@@ -1,71 +1,34 @@
-/*
-----------------------------------------------------
-AgroTorch Firestore
-User Repository
-Version 1.0.0
-----------------------------------------------------
-*/
+import { doc, setDoc, getDoc, updateDoc } from "firebase/firestore";
+import { db, auth } from "../../core/config/firebase.js";
 
-import {
-  collection,
-  doc,
-  setDoc,
-  getDoc,
-  updateDoc
-} from "firebase/firestore";
+const USERS = "users";
 
-import { db } from "../../core/config/firebase.js";
-
-const USERS = collection(db, "users");
+function assertOwnProfile(uid) {
+  if (!auth.currentUser?.uid || auth.currentUser.uid !== uid) {
+    throw new Error("You can only access your own user profile.");
+  }
+}
 
 export async function createUserProfile(uid, data) {
-
-  await setDoc(doc(USERS, uid), {
-
+  assertOwnProfile(uid);
+  await setDoc(doc(db, USERS, uid), {
     ...data,
-
+    uid,
     createdAt: new Date().toISOString(),
-
     updatedAt: new Date().toISOString()
-
   });
-
 }
 
 export async function getUserProfile(uid) {
-
-  const snapshot = await getDoc(doc(USERS, uid));
-
-  if (!snapshot.exists()) {
-
-    return null;
-
-  }
-
-  return {
-
-    id: snapshot.id,
-
-    ...snapshot.data()
-
-  };
-
+  assertOwnProfile(uid);
+  const snapshot = await getDoc(doc(db, USERS, uid));
+  return snapshot.exists() ? { id: snapshot.id, ...snapshot.data() } : null;
 }
 
 export async function updateUserProfile(uid, updates) {
-
-  await updateDoc(
-
-    doc(USERS, uid),
-
-    {
-
-      ...updates,
-
-      updatedAt: new Date().toISOString()
-
-    }
-
-  );
-
+  assertOwnProfile(uid);
+  await updateDoc(doc(db, USERS, uid), {
+    ...updates,
+    updatedAt: new Date().toISOString()
+  });
 }

@@ -1,6 +1,9 @@
 import { auth } from "../core/config/firebase.js";
-import { getCurrentUser } from "./authStorage.js";
 
+/*
+ * Firebase Auth is the sole source of identity.
+ * Never fall back to a cached display name or stale local profile after logout.
+ */
 export function getCurrentUserId() {
-  return auth.currentUser?.uid || getCurrentUser()?.uid || getCurrentUser()?.id || null;
+  return auth.currentUser?.uid || null;
 }
