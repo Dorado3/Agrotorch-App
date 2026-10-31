@@ -1,9 +1,17 @@
 /*
- * AgroTorch pest pressure context.
- * Weather is a proxy only and must never be presented as proof of infestation.
+ * Weather-informed general pest pressure.
+ * Weather is a proxy only and cannot confirm an infestation.
  */
 export function evaluatePestRisk(context = {}) {
   const weather = context.weather || {};
+  if (weather.status === "UNAVAILABLE" || weather.status === "STALE") {
+    return {
+      risk: "UNKNOWN",
+      reason: "No recent verified weather readings are available. Conduct routine field scouting; weather alone cannot confirm pest presence.",
+      basis: weather.status === "STALE" ? "Stale weather data" : "No weather data"
+    };
+  }
+
   const hasValue = value => value !== null && value !== undefined && value !== "" && Number.isFinite(Number(value));
   const hasTemperature = hasValue(weather.temperature);
   const hasHumidity = hasValue(weather.humidity);
@@ -21,20 +29,20 @@ export function evaluatePestRisk(context = {}) {
       (hasTemperature && temperature >= 35)) {
     return {
       risk: "HIGH",
-      reason: "Recorded conditions may favour some pest activity. Inspect growing points, leaf undersides, flowers and fruit before deciding on control.",
-      basis: "Verified weather inputs"
+      reason: "Recent conditions may favour some pest activity. Inspect growing points, leaf undersides, flowers and fruit before deciding on control.",
+      basis: "Recent Open-Meteo readings"
     };
   }
   if ((hasTemperature && temperature >= 29) || (hasHumidity && humidity >= 65)) {
     return {
       risk: "MEDIUM",
       reason: "Conditions may support pest activity. Check representative plants and record pest counts or damage.",
-      basis: "Verified weather inputs"
+      basis: "Recent Open-Meteo readings"
     };
   }
   return {
     risk: "LOW",
-    reason: "Available weather readings indicate lower general pest pressure; continue routine scouting.",
-    basis: "Verified weather inputs"
+    reason: "Available recent weather readings indicate lower general pest pressure; continue routine scouting.",
+    basis: "Recent Open-Meteo readings"
   };
 }

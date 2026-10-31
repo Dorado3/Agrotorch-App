@@ -3,7 +3,8 @@
  */
 import { splashPage } from "./pages/onboarding/splash.js";
 import { startSplash } from "./utils/splash.js";
-import { loadWorkspace as initializeWorkspace } from "./core/workspace/workspace.js";
+import { loadWorkspace as initializeWorkspace, getWorkspace } from "./core/workspace/workspace.js";
+import { refreshWeatherForFarm } from "./core/weather/weatherService.js";
 import { renderPage } from "./core/render/renderPage.js";
 import { dashboardPage } from "./pages/dashboard.js";
 import { myFarmPage, initMyFarmPage } from "./pages/myfarm.js";
@@ -29,7 +30,6 @@ export function startApp() {
   if (!root) return;
   root.innerHTML = splashPage();
 
-  // Retry pending cloud writes when the device regains connectivity.
   window.addEventListener("online", () => {
     initializeWorkspace().catch(error => console.warn("Background farm sync will retry later:", error));
   });
@@ -73,31 +73,44 @@ function loadAppWorkspace() {
     </div>`;
 
   const page = document.getElementById("page");
+  let currentView = "home";
   registerNavigator(html => { page.innerHTML = html; });
 
   const showHome = () => {
+    currentView = "home";
     page.innerHTML = dashboardPage();
     document.getElementById("dashboardTaskBtn")?.addEventListener("click", showCDRE);
   };
   const showMyFarm = async () => {
+    currentView = "farms";
     await renderPage(page, myFarmPage);
     initMyFarmPage();
   };
-  const showFarmWorkspace = () => { page.innerHTML = commandCenterPage(); };
+  const showFarmWorkspace = async () => {
+    currentView = "farm";
+    const farm = getWorkspace().activeFarm;
+    if (farm) await refreshWeatherForFarm(farm);
+    page.innerHTML = commandCenterPage();
+  };
   const showAddFarm = () => {
+    currentView = "addFarm";
     page.innerHTML = addFarmPage();
     initAddFarmPage(async () => {
       await initializeWorkspace();
       await showMyFarm();
     });
   };
-  const showCDRE = () => {
+  const showCDRE = async () => {
+    currentView = "cdre";
+    const farm = getWorkspace().activeFarm;
+    if (farm) await refreshWeatherForFarm(farm);
     page.innerHTML = cdrePage();
     initCDREPage();
     document.getElementById("cdreAddFarmBtn")?.addEventListener("click", showAddFarm);
   };
-  const showActivities = () => { page.innerHTML = activityTimelinePage(); };
+  const showActivities = () => { currentView = "activities"; page.innerHTML = activityTimelinePage(); };
   const showTasks = () => {
+    currentView = "records";
     page.innerHTML = `<section class="dashboard"><h2>📋 Farm Records</h2><div class="agro-card">
       <p>Keep your farm history accurate by recording field activities, expenses, harvests and sales.</p>
       <button class="action-btn" id="recordActivityBtn">＋ Record activity</button>
@@ -118,8 +131,9 @@ function loadAppWorkspace() {
     document.getElementById("recordSaleBtn").onclick = () => { page.innerHTML = addSalePage(); initAddSalePage(); };
     document.getElementById("salesHistoryBtn").onclick = () => { page.innerHTML = salesTimelinePage(); initSalesTimeline(); };
   };
-  const showReports = () => { page.innerHTML = profitLensPage(); };
+  const showReports = () => { currentView = "reports"; page.innerHTML = profitLensPage(); };
   const showSettings = () => {
+    currentView = "settings";
     page.innerHTML = settingsPage();
     initSettingsPage(() => {
       root.innerHTML = loginPage();
@@ -131,6 +145,13 @@ function loadAppWorkspace() {
   };
 
   showHome();
+  const activeFarm = getWorkspace().activeFarm;
+  if (activeFarm) {
+    refreshWeatherForFarm(activeFarm).then(() => {
+      if (currentView === "home") showHome();
+    }).catch(error => console.warn("Weather refresh unavailable:", error));
+  }
+
   window.addEventListener("farm-selected", showFarmWorkspace);
   window.addEventListener("navigate-add-farm", showAddFarm);
   document.getElementById("homeBtn").addEventListener("click", showHome);

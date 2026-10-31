@@ -9,6 +9,8 @@ import { getCropMission } from "../src/core/knowledge/missions/missionRegistry.j
 import { evaluateProfit } from "../src/core/profit/profitEngine.js";
 import { buildMission } from "../src/core/mission/missionEngine.js";
 import { calculatePerformance } from "../src/core/performance/performanceEngine.js";
+import { refreshWeatherForFarm } from "../src/core/weather/weatherService.js";
+import { getWeatherContext } from "../src/core/weather/weatherEngine.js";
 
 test("CDRE does not invent low risk when evidence is missing", () => {
   assert.equal(evaluateFarmRisk({ crop: "Tomato" }, {}, {}).risk, "UNKNOWN");
@@ -21,9 +23,14 @@ test("weather risk engines return UNKNOWN without observations", () => {
   assert.equal(evaluateDiseaseRisk({ weather }).risk, "UNKNOWN");
   assert.equal(evaluatePestRisk({ weather }).risk, "UNKNOWN");
 });
-test("weather risk engines use real numeric readings", () => {
-  assert.equal(evaluateDiseaseRisk({ weather: { humidity: 88, rainfallProbability: 75 } }).risk, "HIGH");
-  assert.equal(evaluatePestRisk({ weather: { temperature: 36, humidity: 50 } }).risk, "HIGH");
+test("stale weather cannot be used to grade current crop risk", () => {
+  const weather = { status: "STALE", humidity: 90, temperature: 36, rainfallProbability: 90 };
+  assert.equal(evaluateDiseaseRisk({ weather }).risk, "UNKNOWN");
+  assert.equal(evaluatePestRisk({ weather }).risk, "UNKNOWN");
+});
+test("weather risk engines use recent numeric readings", () => {
+  assert.equal(evaluateDiseaseRisk({ weather: { status: "CONNECTED", humidity: 88, rainfallProbability: 75 } }).risk, "HIGH");
+  assert.equal(evaluatePestRisk({ weather: { status: "CONNECTED", temperature: 36, humidity: 50 } }).risk, "HIGH");
 });
 test("health score remains unavailable without enough evidence", () => {
   assert.equal(calculateHealth({ disease: { risk: "UNKNOWN" }, pest: { risk: "UNKNOWN" } }), null);
@@ -51,4 +58,34 @@ test("mission engine asks for observations instead of claiming stability", () =>
 });
 test("performance score remains unavailable without a farm health score", () => {
   assert.equal(calculatePerformance({}, { execution: { score: 90 }, health: null }).score, null);
+});
+test("weather service uses a location lookup and caches current readings", async () => {
+  const oldFetch = globalThis.fetch;
+  const oldStorage = globalThis.localStorage;
+  const values = new Map();
+  globalThis.localStorage = {
+    getItem: key => values.get(key) || null,
+    setItem: (key, value) => values.set(key, value)
+  };
+  let call = 0;
+  globalThis.fetch = async url => {
+    call += 1;
+    if (call === 1) return { ok: true, json: async () => ({ results: [{ name: "Abeokuta", admin1: "Ogun", country_code: "NG", latitude: 7.15, longitude: 3.35 }] }) };
+    return { ok: true, json: async () => ({
+      current: { temperature_2m: 30, relative_humidity_2m: 82, precipitation: 0.2 },
+      hourly: { time: [new Date(Date.now() + 3600000).toISOString()], precipitation_probability: [65] }
+    }) };
+  };
+  try {
+    const weather = await refreshWeatherForFarm({ id: "test-farm", lga: "Abeokuta", state: "Ogun" });
+    assert.equal(weather.status, "CONNECTED");
+    assert.equal(weather.temperature, 30);
+    assert.equal(weather.humidity, 82);
+    assert.equal(weather.rainfallProbability, 65);
+    assert.equal(getWeatherContext({ id: "test-farm" }).status, "CONNECTED");
+    assert.equal(call, 2);
+  } finally {
+    globalThis.fetch = oldFetch;
+    globalThis.localStorage = oldStorage;
+  }
 });
