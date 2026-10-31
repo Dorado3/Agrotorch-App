@@ -1,0 +1,19 @@
+{
+  "name": "AgroTorch AgriOS",
+  "short_name": "AgroTorch",
+  "description": "Farm operations, crop decisions and farm business records.",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#f5f8f3",
+  "theme_color": "#1f6b43",
+  "icons": [
+    {
+      "src": "/favicon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    }
+  ]
+}

@@ -12,6 +12,7 @@ AgroTorch is a mobile-first farm operations and decision-support platform.
 ## Current architecture
 
 - Vite + vanilla JavaScript application shell
+- Installable PWA manifest and cached application shell
 - Firebase Authentication and Firestore farm records
 - User-scoped Firestore activity, expense, harvest, sales and task records
 - Local-first record entry with pending-write retry when connectivity returns
@@ -28,6 +29,10 @@ The repository includes firestore.rules and firestore.indexes.json for the six c
 After reviewing the rules, select the intended Firebase project and deploy only Firestore rules and indexes with the Firebase CLI. The target project configured in the client is greenmarket-d3ffc. The deployment command has not been run from this development workflow.
 
 Existing documents created under legacy user identifiers may need a controlled migration to the current Firebase Auth UID before they become visible under the new owner-scoped queries.
+
+## PWA behavior
+
+The application shell and same-origin static assets are cached for offline reopening. Firestore requests are not intercepted by the service worker. Farm records are cached locally and queued for retry; first-time login and live cloud sync still require connectivity.
 
 ## Production checks
 
