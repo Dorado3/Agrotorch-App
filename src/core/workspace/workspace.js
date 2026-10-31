@@ -3,7 +3,7 @@
  */
 import { auth } from "../config/firebase.js";
 import { getUserFarms } from "../../firestore/FarmFirestore.js";
-import { saveFarm } from "../../services/farmStorage.js";
+import { getFarms, saveFarm } from "../../services/farmStorage.js";
 import { ActivityRepository } from "../../repositories/ActivityRepository.js";
 import { ExpenseRepository } from "../../repositories/ExpenseRepository.js";
 import { HarvestRepository } from "../../repositories/HarvestRepository.js";
@@ -43,8 +43,14 @@ export async function loadWorkspace() {
   }
 
   workspace.user = user;
-  workspace.farms = await getUserFarms(user.uid);
-  workspace.farms.forEach(farm => saveFarm({ ...farm, id: farm.id, ownerId: user.uid }));
+  try {
+    workspace.farms = await getUserFarms(user.uid);
+    workspace.farms.forEach(farm => saveFarm({ ...farm, id: farm.id, ownerId: user.uid }));
+  } catch (error) {
+    console.warn("Cloud farm list unavailable; using this device's farm cache:", error);
+    workspace.farms = getFarms();
+  }
+
   workspace.activeFarm = workspace.farms.length ? workspace.farms[0] : null;
   await hydrateOperationalRecords();
   return workspace;

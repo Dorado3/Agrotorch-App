@@ -16,11 +16,11 @@ AgroTorch is a mobile-first farm operations and decision-support platform.
 - Firebase Authentication and Firestore farm records
 - User-scoped Firestore activity, expense, harvest, sales and task records
 - Local-first record entry with pending-write retry when connectivity returns
-- Crop calendar and evidence-aware CDRE decision support
+- Crop calendar, Open-Meteo weather context and evidence-aware CDRE decision support
 
 ## CDRE evidence policy
 
-The CDRE distinguishes verified risk signals from missing data. Weather is marked unavailable until a weather provider is configured; it is not replaced with sample weather. Crop stage is an estimate based on the recorded planting/transplant date and must be confirmed in the field. Chemical rates and disease diagnoses are not generated from weather proxies.
+The CDRE distinguishes verified risk signals from missing data. Recent weather readings are retrieved from Open-Meteo using the farm's LGA/state and cached for three hours. Stale readings do not produce a current risk grade. Crop stage is an estimate based on the recorded planting/transplant date and must be confirmed in the field. Chemical rates and disease diagnoses are not generated from weather proxies.
 
 ## Firebase security
 
@@ -32,7 +32,7 @@ Existing documents created under legacy user identifiers may need a controlled m
 
 ## PWA behavior
 
-The application shell and same-origin static assets are cached for offline reopening. Firestore requests are not intercepted by the service worker. Farm records are cached locally and queued for retry; first-time login and live cloud sync still require connectivity.
+The application shell and same-origin static assets are cached for offline reopening. Firestore requests are not intercepted by the service worker. The app uses its local farm cache when the cloud farm list is unavailable; operational records are queued for retry. First-time login and initial farm registration still require connectivity.
 
 ## Production checks
 
