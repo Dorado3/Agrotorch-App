@@ -1,0 +1,81 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    function signedIn() {
+      return request.auth != null;
+    }
+
+    function ownsFarm(farmId) {
+      return signedIn()
+        && farmId is string
+        && exists(/databases/$(database)/documents/farms/$(farmId))
+        && get(/databases/$(database)/documents/farms/$(farmId)).data.ownerId == request.auth.uid;
+    }
+
+    function ownsRecord() {
+      return signedIn() && resource.data.userId == request.auth.uid;
+    }
+
+    function canCreateRecord() {
+      return signedIn()
+        && request.resource.data.userId == request.auth.uid
+        && ownsFarm(request.resource.data.farmId);
+    }
+
+    match /users/{userId} {
+      allow read: if signedIn() && request.auth.uid == userId;
+      allow create: if signedIn()
+        && request.auth.uid == userId
+        && request.resource.data.uid == userId;
+      allow update: if signedIn()
+        && request.auth.uid == userId
+        && resource.data.uid == userId
+        && request.resource.data.uid == userId
+        && request.resource.data.role == resource.data.role
+        && request.resource.data.status == resource.data.status;
+      allow delete: if false;
+    }
+
+    match /farms/{farmId} {
+      allow create: if signedIn() && request.resource.data.ownerId == request.auth.uid;
+      allow read, delete: if signedIn() && resource.data.ownerId == request.auth.uid;
+      allow update: if signedIn()
+        && resource.data.ownerId == request.auth.uid
+        && request.resource.data.ownerId == request.auth.uid;
+    }
+
+    match /activities/{recordId} {
+      allow create: if canCreateRecord();
+      allow read, delete: if ownsRecord();
+      allow update: if ownsRecord() && canCreateRecord();
+    }
+
+    match /expenses/{recordId} {
+      allow create: if canCreateRecord();
+      allow read, delete: if ownsRecord();
+      allow update: if ownsRecord() && canCreateRecord();
+    }
+
+    match /harvests/{recordId} {
+      allow create: if canCreateRecord();
+      allow read, delete: if ownsRecord();
+      allow update: if ownsRecord() && canCreateRecord();
+    }
+
+    match /sales/{recordId} {
+      allow create: if canCreateRecord();
+      allow read, delete: if ownsRecord();
+      allow update: if ownsRecord() && canCreateRecord();
+    }
+
+    match /tasks/{taskId} {
+      allow create: if canCreateRecord();
+      allow read, delete: if ownsRecord();
+      allow update: if ownsRecord() && canCreateRecord();
+    }
+
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}

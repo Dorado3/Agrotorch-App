@@ -4,22 +4,31 @@ AgroTorch is a mobile-first farm operations and decision-support platform.
 
 ## Development
 
-- `npm install`
-- `npm run dev`
-- `npm test`
-- `npm run build`
+- npm install
+- npm run dev
+- npm test
+- npm run build
 
 ## Current architecture
 
 - Vite + vanilla JavaScript application shell
 - Firebase Authentication and Firestore farm records
-- Browser-local activity, expense, harvest, sales and task records
-- Crop calendar and rule-based CDRE decision support
+- User-scoped Firestore activity, expense, harvest, sales and task records
+- Local-first record entry with pending-write retry when connectivity returns
+- Crop calendar and evidence-aware CDRE decision support
 
 ## CDRE evidence policy
 
 The CDRE distinguishes verified risk signals from missing data. Weather is marked unavailable until a weather provider is configured; it is not replaced with sample weather. Crop stage is an estimate based on the recorded planting/transplant date and must be confirmed in the field. Chemical rates and disease diagnoses are not generated from weather proxies.
 
-## Important production checks
+## Firebase security
 
-Before production release, verify Firebase Authentication settings, Firestore security rules, Storage rules, hosting configuration, API integrations, and an end-to-end test using a non-production farmer account.
+The repository includes firestore.rules and firestore.indexes.json for the six collections used by the app plus user profiles. Review these rules against the existing Firebase project and any historical records before deploying them. The rules intentionally deny access to unlisted collections.
+
+After reviewing the rules, select the intended Firebase project and deploy only Firestore rules and indexes with the Firebase CLI. The target project configured in the client is greenmarket-d3ffc. The deployment command has not been run from this development workflow.
+
+Existing documents created under legacy user identifiers may need a controlled migration to the current Firebase Auth UID before they become visible under the new owner-scoped queries.
+
+## Production checks
+
+Before release, verify Firebase Authentication settings, Firestore rules, Storage rules if file uploads are enabled, hosting configuration, API integrations, and an end-to-end test using a non-production farmer account.
